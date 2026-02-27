@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ArborSpace — Features</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --forest: #0f2419;
+    --forest-mid: #1a3a2a;
+    --canopy: #3d8b63;
+    --leaf: #5cb87a;
+    --leaf-light: #a8e6c3;
+    --amber: #e8a838;
+    --amber-light: #f5d590;
+    --cream: #faf8f4;
+    --cream-dark: #f0ece4;
+    --bark: #8b7355;
+    --text-dark: #1a1a18;
+    --text-mid: #4a4a45;
+    --text-light: #7a7a72;
+    --white: #ffffff;
+    --blue: #4a7ad9;
+    --blue-light: #a3c8f0;
+    --purple: #9b6dd7;
+    --purple-light: #d4a8f5;
+    --radius: 12px;
+    --radius-lg: 20px;
+    --shadow-sm: 0 2px 8px rgba(15,36,25,0.06);
+    --shadow-md: 0 8px 32px rgba(15,36,25,0.10);
+    --shadow-lg: 0 16px 64px rgba(15,36,25,0.14);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{font-family:'Outfit',sans-serif;background:var(--cream);color:var(--text-dark);line-height:1.6;overflow-x:hidden}
+
+  /* NAV */
+  nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(250,248,244,0.88);backdrop-filter:blur(20px);border-bottom:1px solid rgba(15,36,25,0.06)}
+  nav.scrolled{box-shadow:var(--shadow-sm)}
+  .nav-inner{max-width:1200px;margin:0 auto;padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:72px}
+  .logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--forest)}
+  .logo svg{width:32px;height:32px}
+  .logo-text{font-family:'DM Serif Display',serif;font-size:1.35rem;letter-spacing:-0.02em}
+  .nav-links{display:flex;align-items:center;gap:2rem}
+  .nav-links a{text-decoration:none;color:var(--text-mid);font-weight:500;font-size:0.95rem;transition:color 0.2s;position:relative}
+  .nav-links a:hover{color:var(--forest)}
+  .nav-links a.active{color:var(--forest);font-weight:600}
+  .nav-links a.active::after{content:'';position:absolute;bottom:-4px;left:0;right:0;height:2px;background:var(--canopy);border-radius:1px}
+  .nav-cta{background:var(--forest)!important;color:var(--white)!important;padding:10px 22px!important;border-radius:8px;font-weight:600!important;transition:all 0.25s!important}
+  .nav-cta:hover{background:var(--forest-mid)!important;transform:translateY(-1px)}
+  .nav-cta::after{display:none!important}
+
+  /* PAGE HEADER */
+  .page-header{padding:150px 2rem 40px;text-align:center;position:relative}
+  .page-header::before{content:'';position:absolute;top:-150px;left:50%;transform:translateX(-50%);width:800px;height:800px;background:radial-gradient(circle,rgba(61,139,99,0.06) 0%,transparent 70%);pointer-events:none}
+  .section-label{font-size:0.8rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--canopy);font-weight:600;margin-bottom:1rem}
+  .page-header h1{font-family:'DM Serif Display',serif;font-size:clamp(2.5rem,5vw,3.8rem);color:var(--forest);letter-spacing:-0.03em;margin-bottom:1.2rem;max-width:750px;margin-left:auto;margin-right:auto}
+  .page-header h1 em{font-style:italic;color:var(--canopy)}
+  .page-header p{font-size:1.15rem;color:var(--text-mid);max-width:620px;margin:0 auto;font-weight:300;line-height:1.7}
+
+  /* FEATURE NAV */
+  .feature-nav{padding:0.5rem 2rem 3rem;position:sticky;top:72px;z-index:50;background:rgba(250,248,244,0.92);backdrop-filter:blur(12px)}
+  .feature-nav-inner{max-width:900px;margin:0 auto;display:flex;justify-content:center;gap:0.4rem;flex-wrap:wrap;padding:8px;background:var(--white);border-radius:12px;box-shadow:var(--shadow-sm);border:1px solid rgba(15,36,25,0.04)}
+  .feature-nav a{padding:8px 16px;border-radius:8px;font-size:0.82rem;font-weight:500;color:var(--text-light);text-decoration:none;transition:all 0.2s;white-space:nowrap}
+  .feature-nav a:hover{color:var(--forest);background:var(--cream)}
+  .feature-nav a.fn-active{background:var(--forest);color:var(--white)}
+
+  /* UTILS */
+  .section-title{font-family:'DM Serif Display',serif;font-size:clamp(1.8rem,3.5vw,2.4rem);color:var(--forest);letter-spacing:-0.02em;margin-bottom:0.6rem}
+  .section-desc{font-size:1.02rem;color:var(--text-mid);max-width:600px;font-weight:300;margin-bottom:3rem;line-height:1.7}
+
+  /* FEATURE SECTION */
+  .feat-section{padding:5rem 2rem;scroll-margin-top:140px}
+  .feat-section:nth-child(even){background:var(--white)}
+  .feat-inner{max-width:1100px;margin:0 auto}
+
+  /* HERO FEATURE (big feature blocks) */
+  .hero-feat{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center;margin-bottom:2.5rem}
+  .hero-feat-text h3{font-family:'DM Serif Display',serif;font-size:1.6rem;color:var(--forest);margin-bottom:0.8rem}
+  .hero-feat-text p{color:var(--text-mid);font-weight:300;line-height:1.8;font-size:0.95rem;margin-bottom:1rem}
+  .hero-feat-visual{background:var(--forest);border-radius:var(--radius-lg);padding:2rem;color:var(--white);position:relative;overflow:hidden}
+  .hero-feat-visual::before{content:'';position:absolute;top:-60px;right:-60px;width:200px;height:200px;background:radial-gradient(circle,rgba(92,184,122,0.1) 0%,transparent 70%);pointer-events:none}
+  .feat-section:nth-child(even) .hero-feat-visual{background:var(--forest)}
+
+  /* Feature cards grid */
+  .feat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.2rem}
+  .feat-card{background:var(--white);border:1px solid rgba(15,36,25,0.05);border-radius:var(--radius-lg);padding:2rem;transition:all 0.35s;position:relative;overflow:hidden}
+  .feat-section:nth-child(even) .feat-card{background:var(--cream)}
+  .feat-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-md);border-color:rgba(61,139,99,0.12)}
+  .feat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;opacity:0;transition:opacity 0.35s}
+  .feat-card:hover::before{opacity:1}
+  .feat-card:nth-child(1)::before,.feat-card:nth-child(4)::before{background:linear-gradient(90deg,var(--canopy),var(--leaf))}
+  .feat-card:nth-child(2)::before,.feat-card:nth-child(5)::before{background:linear-gradient(90deg,var(--blue),var(--blue-light))}
+  .feat-card:nth-child(3)::before,.feat-card:nth-child(6)::before{background:linear-gradient(90deg,var(--purple),var(--purple-light))}
+  .feat-card-icon{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;margin-bottom:1.2rem}
+  .fci-green{background:rgba(61,139,99,0.08)}
+  .fci-blue{background:rgba(74,122,217,0.08)}
+  .fci-purple{background:rgba(155,109,215,0.08)}
+  .fci-amber{background:rgba(232,168,56,0.08)}
+  .feat-card h4{font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--forest);margin-bottom:0.5rem}
+  .feat-card p{color:var(--text-mid);font-size:0.88rem;line-height:1.7;font-weight:300}
+  .feat-card-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:1rem}
+  .feat-card-tag{padding:3px 9px;background:rgba(61,139,99,0.05);border:1px solid rgba(61,139,99,0.08);border-radius:5px;font-size:0.68rem;color:var(--canopy);font-family:'JetBrains Mono',monospace;font-weight:500}
+
+  /* Import table */
+  .import-table{width:100%;border-collapse:separate;border-spacing:0;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-sm);margin:1.5rem 0}
+  .import-table thead th{padding:12px 18px;text-align:left;font-size:0.75rem;text-transform:uppercase;letter-spacing:0.08em;font-weight:600;color:var(--text-light);background:var(--cream-dark);border-bottom:1px solid rgba(15,36,25,0.06)}
+  .import-table tbody td{padding:12px 18px;font-size:0.88rem;color:var(--text-mid);background:var(--white);border-bottom:1px solid var(--cream-dark)}
+  .import-table tbody tr:last-child td{border-bottom:none}
+  .import-table .ext{font-family:'JetBrains Mono',monospace;font-size:0.8rem;color:var(--canopy);font-weight:500}
+  .feat-section:nth-child(even) .import-table tbody td{background:var(--cream)}
+
+  /* Code mock */
+  .code-mock{background:rgba(0,0,0,0.3);border-radius:10px;padding:1.2rem;font-family:'JetBrains Mono',monospace;font-size:0.75rem;line-height:1.7;overflow-x:auto}
+  .code-mock .cm-comment{color:rgba(255,255,255,0.3)}
+  .code-mock .cm-key{color:var(--leaf-light)}
+  .code-mock .cm-str{color:var(--amber-light)}
+  .code-mock .cm-num{color:var(--blue-light)}
+  .code-mock .cm-kw{color:var(--purple-light)}
+  .code-mock .cm-var{color:#ff9f7f}
+
+  /* Pipeline visual */
+  .pipeline{display:flex;gap:0;align-items:stretch;margin:1.5rem 0}
+  .pipeline-step{flex:1;text-align:center;padding:1.2rem 1rem;position:relative;transition:all 0.3s}
+  .pipeline-step:hover{transform:translateY(-2px)}
+  .pipeline-step-num{font-family:'JetBrains Mono',monospace;font-size:0.7rem;font-weight:700;color:var(--canopy);margin-bottom:0.4rem}
+  .pipeline-step h5{font-size:0.85rem;color:var(--forest);margin-bottom:0.3rem;font-weight:600}
+  .pipeline-step p{font-size:0.75rem;color:var(--text-light);line-height:1.5;font-weight:300}
+  .pipeline-arrow{flex-shrink:0;display:flex;align-items:center;font-size:1rem;color:var(--canopy);font-weight:700;padding:0 0.3rem}
+
+  /* Graph visual mock */
+  .graph-mock{position:relative;height:280px;overflow:hidden}
+  .graph-node{position:absolute;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.6rem;font-weight:600;color:var(--white);transition:all 0.3s}
+  .graph-node:hover{transform:scale(1.15);z-index:2}
+  .graph-edge{position:absolute;height:2px;transform-origin:left center;opacity:0.3}
+
+  /* Workflow mock */
+  .workflow-mock{font-family:'JetBrains Mono',monospace;font-size:0.78rem;line-height:1.8}
+  .wf-step{padding:10px 14px;background:rgba(255,255,255,0.04);border-radius:8px;margin-bottom:6px;border-left:3px solid transparent;transition:all 0.2s}
+  .wf-step:hover{background:rgba(255,255,255,0.07)}
+  .wf-step-active{border-left-color:var(--leaf)}
+  .wf-h{color:var(--leaf-light);font-weight:600}
+  .wf-t{color:rgba(255,255,255,0.5)}
+  .wf-v{color:var(--amber-light)}
+
+  /* API section */
+  .api-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem}
+  .api-group{background:var(--white);border:1px solid rgba(15,36,25,0.05);border-radius:var(--radius);padding:1.5rem;transition:all 0.3s}
+  .feat-section:nth-child(even) .api-group{background:var(--cream)}
+  .api-group:hover{box-shadow:var(--shadow-sm);transform:translateY(-2px)}
+  .api-group h4{font-family:'DM Serif Display',serif;font-size:1rem;color:var(--forest);margin-bottom:0.8rem;display:flex;align-items:center;gap:8px}
+  .api-group h4 span{font-size:1.1rem}
+  .api-endpoint{display:flex;align-items:center;gap:8px;padding:6px 0;font-size:0.78rem;font-family:'JetBrains Mono',monospace}
+  .api-method{padding:2px 6px;border-radius:4px;font-size:0.65rem;font-weight:700;flex-shrink:0}
+  .api-get{background:rgba(61,139,99,0.1);color:var(--canopy)}
+  .api-post{background:rgba(74,122,217,0.1);color:var(--blue)}
+  .api-path{color:var(--text-mid)}
+
+  /* Tech stack */
+  .stack-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem}
+  .stack-item{text-align:center;padding:1.5rem 1rem;background:var(--cream);border:1px solid rgba(15,36,25,0.05);border-radius:var(--radius);transition:all 0.3s}
+  .feat-section:nth-child(even) .stack-item{background:var(--white)}
+  .stack-item:hover{transform:translateY(-2px);box-shadow:var(--shadow-sm)}
+  .stack-item-icon{font-size:1.8rem;margin-bottom:0.6rem}
+  .stack-item h4{font-size:0.9rem;color:var(--forest);font-weight:600;margin-bottom:0.2rem}
+  .stack-item p{font-size:0.78rem;color:var(--text-light)}
+
+  /* Quick start */
+  .quickstart{display:grid;grid-template-columns:repeat(5,1fr);gap:1rem;margin-top:2rem}
+  .qs-step{text-align:center;padding:1.5rem 0.8rem;position:relative}
+  .qs-num{width:36px;height:36px;border-radius:50%;background:var(--forest);color:var(--white);display:flex;align-items:center;justify-content:center;margin:0 auto 0.8rem;font-family:'JetBrains Mono',monospace;font-size:0.85rem;font-weight:700}
+  .qs-step h5{font-size:0.9rem;color:var(--forest);margin-bottom:0.3rem;font-weight:600}
+  .qs-step p{font-size:0.78rem;color:var(--text-light);line-height:1.5}
+
+  /* CTA */
+  .cta{padding:6rem 2rem;text-align:center;background:var(--forest);position:relative;overflow:hidden}
+  .cta::before{content:'';position:absolute;top:-200px;left:50%;transform:translateX(-50%);width:800px;height:800px;background:radial-gradient(circle,rgba(92,184,122,0.1) 0%,transparent 70%);pointer-events:none}
+  .cta h2{font-family:'DM Serif Display',serif;font-size:clamp(2rem,4vw,2.6rem);color:var(--white);margin-bottom:1rem}
+  .cta p{color:rgba(255,255,255,0.6);font-size:1.05rem;margin-bottom:2.5rem;font-weight:300;max-width:500px;margin-left:auto;margin-right:auto}
+  .cta-actions{display:flex;justify-content:center;gap:1rem;flex-wrap:wrap}
+  .btn-cta-w{background:var(--white);color:var(--forest);padding:14px 32px;border-radius:10px;font-weight:600;font-size:1rem;text-decoration:none;transition:all 0.25s}
+  .btn-cta-w:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.2)}
+  .btn-cta-o{background:transparent;color:var(--white);padding:14px 32px;border-radius:10px;font-weight:600;font-size:1rem;text-decoration:none;transition:all 0.25s;border:1.5px solid rgba(255,255,255,0.25)}
+  .btn-cta-o:hover{border-color:rgba(255,255,255,0.5)}
+
+  /* FOOTER */
+  footer{background:var(--forest);color:rgba(255,255,255,0.6);padding:3rem 2rem 2rem;border-top:1px solid rgba(255,255,255,0.06)}
+  .footer-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr;gap:3rem;margin-bottom:2rem}
+  .footer-brand .logo-text{color:var(--white)}
+  .footer-brand p{margin-top:1rem;font-size:0.85rem;line-height:1.7;max-width:280px}
+  .footer-col h4{color:var(--white);font-weight:600;font-size:0.82rem;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:1rem}
+  .footer-col a{display:block;color:rgba(255,255,255,0.5);text-decoration:none;font-size:0.88rem;padding:3px 0;transition:color 0.2s}
+  .footer-col a:hover{color:var(--leaf-light)}
+  .footer-bottom{max-width:1100px;margin:0 auto;border-top:1px solid rgba(255,255,255,0.08);padding-top:1.5rem;display:flex;justify-content:space-between;font-size:0.78rem}
+  .footer-bottom a{color:rgba(255,255,255,0.4);text-decoration:none}
+
+  @media(max-width:768px){
+    .hero-feat{grid-template-columns:1fr}
+    .feat-grid{grid-template-columns:1fr}
+    .api-grid{grid-template-columns:1fr}
+    .stack-grid{grid-template-columns:repeat(2,1fr)}
+    .quickstart{grid-template-columns:1fr}
+    .pipeline{flex-direction:column}
+    .pipeline-arrow{transform:rotate(90deg);justify-content:center;padding:0.3rem 0}
+    .footer-inner{grid-template-columns:1fr 1fr}
+    .nav-links a:not(.nav-cta){display:none}
+    .feature-nav{display:none}
+  }
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="logo">
+      <svg viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="8" fill="#0f2419"/><path d="M16 6 L16 18 M12 10 L16 14 M20 10 L16 14 M10 14 L16 20 M22 14 L16 20 M8 18 L16 26 M24 18 L16 26" stroke="#5cb87a" stroke-width="2" stroke-linecap="round"/></svg>
+      <span class="logo-text">ArborSpace</span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="#" class="active">Features</a>
+      <a href="usecases.html">Use Cases</a>
+      <a href="services.html">Services</a>
+      <a href="mailto:jeanphilbreysse@gmail.com" class="nav-cta">Contact Us</a>
+    </div>
+  </div>
+</nav>
+
+<section class="page-header">
+  <div class="section-label">Features</div>
+  <h1>Everything you need to <em>grow knowledge</em></h1>
+  <p>A RAG-powered knowledge management system built with SvelteKit, PostgreSQL/pgvector, and Ollama. Every feature designed for humans to navigate and AI to retrieve.</p>
+</section>
+
+<!-- Feature nav -->
+<div class="feature-nav">
+  <div class="feature-nav-inner">
+    <a href="#content" class="fn-active">Content</a>
+    <a href="#import">Import</a>
+    <a href="#rag">RAG Search</a>
+    <a href="#graph">Knowledge Graph</a>
+    <a href="#workflows">Workflows</a>
+    <a href="#enrichment">Enrichment</a>
+    <a href="#permissions">Permissions</a>
+    <a href="#api">API</a>
+    <a href="#stack">Stack</a>
+  </div>
+</div>
+
+<!-- ═══ 1. CONTENT MANAGEMENT ═══ -->
+<section class="feat-section" id="content">
+  <div class="feat-inner">
+    <div class="section-label">Content Management</div>
+    <h2 class="section-title">Posts are the atomic unit of ArborSpace</h2>
+    <p class="section-desc">Everything is a post — articles, reports, prompt templates, meeting notes. Each post carries six dimensions that serve both human navigation and machine intelligence.</p>
+
+    <div class="feat-grid">
+      <div class="feat-card">
+        <div class="feat-card-icon fci-green">✏️</div>
+        <h4>Rich Text Editor</h4>
+        <p>TipTap-based editor with full formatting — headings, lists, code blocks, tables, inline images. Write as naturally as in any wiki or document editor.</p>
+        <div class="feat-card-tags">
+          <span class="feat-card-tag">TipTap</span>
+          <span class="feat-card-tag">Markdown</span>
+          <span class="feat-card-tag">Code blocks</span>
+        </div>
+      </div>
+
+      <div class="feat-card">
+        <div class="feat-card-icon fci-blue">🗂️</div>
+        <h4>Categories & Taxonomy</h4>
+        <p>Organize posts by category — documentation, tutorial, chat-log, report. Hierarchical classification drives RAG search precision: queries are filtered by your domain taxonomy.</p>
+        <div class="feat-card-tags">
+          <span class="feat-card-tag">Hierarchical</span>
+          <span class="feat-card-tag">RAG-filtered</span>
+        </div>
+      </div>
+
+      <div class="feat-card">
+        <div class="feat-card-icon fci-purple">🏷️</div>
+        <h4>Tags & Cross-References</h4>
+        <p>Flat labels that cut across categories. A post can be tagged CAPEX + Morocco + due-diligence. Tags power faceted search, template matching, and graph connections.</p>
+        <div class="feat-card-tags">
+          <span class="feat-card-tag">Faceted search</span>
+          <span class="feat-card-tag">Graph edges</span>
+        </div>
+      </div>
+
+      <div class="feat-card">
+        <div class="feat-card-icon fci-amber">📁</div>
+        <h4>Paths & Virtual Folders</h4>
+        <p>Hierarchical folder-like organization for human browsing. A post can appear in multiple folders without duplication — navigational structure independent of content classification.</p>
+        <div class="feat-card-tags">
+          <span class="feat-card-tag">Multi-path</span>
+          <span class="feat-card-tag">No duplication</span>
+        </div>
+      </div>
+
+      <div class="feat-card">
+        <div class="feat-card-icon fci-green">🔐</div>
+        <h4>Visibility & Access</h4>
+        <p>Public, private, or group-based access control. NDA-sensitive reports locked to specific teams. RBAC enforced at query time — search results respect permissions automatically.</p>
+        <div class="feat-card-tags">
+          <span class="feat-card-tag">RBAC</span>
+          <span class="feat-card-tag">Group ACL</span>
+          <span class="feat-card-tag">Query-time filter</span>
+        </div>
+      </div>
+
+      <div class="feat-card">
+        <div class="feat-card-icon fci-blue">📊</div>
+        <h4>Status & Provenance</h4>
+        <p>Assigned / Closed tracks review workflow. Source tracks origin: manual creation, PDF import, SharePoint sync, workflow output. Full audit trail from creation to current state.</p>
+        <div class="feat-card-tags">
+          <span class="feat-card-tag">Audit trail</span>
+          <span class="feat-card-tag">Source tracking</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 2. DOCUMENT IMPORT ═══ -->
+<section class="feat-section" id="import">
+  <div class="feat-inner">
+    <div class="section-label">Document Import</div>
+    <h2 class="section-title">Bring your existing knowledge in</h2>
+    <p class="section-desc">Import documents from any format. ArborSpace extracts content, preserves structure, and makes everything searchable and AI-ready.</p>
+
+    <div class="hero-feat">
+      <div class="hero-feat-text">
+        <h3>Six formats, one pipeline</h3>
+        <p>Upload Word docs, Excel spreadsheets, PDFs, PowerPoints, HTML files, or plain text. ArborSpace extracts content with structure preservation — headings, lists, formatting, even Excel formulas.</p>
+        <p>When importing Excel files, formulas are extracted alongside values, enabling AI questions like "How is the total calculated?" — not just "What is the total?"</p>
+      </div>
+      <div>
+        <table class="import-table">
+          <thead><tr><th>Format</th><th>Extension</th><th>Capabilities</th></tr></thead>
+          <tbody>
+            <tr><td>Word</td><td class="ext">.docx</td><td>Preserves headings, lists, bold/italic formatting</td></tr>
+            <tr><td>Excel</td><td class="ext">.xlsx .xls</td><td>Data + formula extraction for RAG exploration</td></tr>
+            <tr><td>PDF</td><td class="ext">.pdf</td><td>Full text extraction with layout detection</td></tr>
+            <tr><td>PowerPoint</td><td class="ext">.pptx</td><td>Slide text extraction with structure</td></tr>
+            <tr><td>HTML</td><td class="ext">.html .htm</td><td>Content extraction with semantic structure</td></tr>
+            <tr><td>Text</td><td class="ext">.txt</td><td>Plain text import with auto-formatting</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 3. RAG SEARCH ═══ -->
+<section class="feat-section" id="rag">
+  <div class="feat-inner">
+    <div class="section-label">RAG — Retrieval-Augmented Generation</div>
+    <h2 class="section-title">From question to sourced answer in 100ms</h2>
+    <p class="section-desc">Documents are chunked, embedded, and stored as vectors. Hybrid search combines semantic similarity with keyword matching for precision results.</p>
+
+    <!-- Pipeline -->
+    <div class="pipeline">
+      <div class="pipeline-step">
+        <div class="pipeline-step-num">01</div>
+        <h5>Chunk</h5>
+        <p>Documents split into ~500 character chunks with 50 char overlap</p>
+      </div>
+      <div class="pipeline-arrow">→</div>
+      <div class="pipeline-step">
+        <div class="pipeline-step-num">02</div>
+        <h5>Embed</h5>
+        <p>nomic-embed-text-v2-moe encodes each chunk as 768-dim vector</p>
+      </div>
+      <div class="pipeline-arrow">→</div>
+      <div class="pipeline-step">
+        <div class="pipeline-step-num">03</div>
+        <h5>Store</h5>
+        <p>Vectors stored in PostgreSQL with pgvector for fast similarity search</p>
+      </div>
+      <div class="pipeline-arrow">→</div>
+      <div class="pipeline-step">
+        <div class="pipeline-step-num">04</div>
+        <h5>Search</h5>
+        <p>Hybrid: cosine similarity + ts_rank keyword matching, configurable weight</p>
+      </div>
+      <div class="pipeline-arrow">→</div>
+      <div class="pipeline-step">
+        <div class="pipeline-step-num">05</div>
+        <h5>Generate</h5>
+        <p>Mistral receives relevant chunks + prompt template, streams sourced answer</p>
+      </div>
+    </div>
+
+    <div class="hero-feat" style="margin-top:3rem">
+      <div class="hero-feat-visual">
+        <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.3);margin-bottom:1rem;font-weight:600">Hybrid Search in Action</div>
+        <div class="code-mock">
+          <div><span class="cm-comment">// User asks a question</span></div>
+          <div><span class="cm-key">query</span>: <span class="cm-str">"O&M costs for solar in North Africa?"</span></div>
+          <div style="margin-top:8px"><span class="cm-comment">// Step 1: Embed the question</span></div>
+          <div><span class="cm-key">vector</span> = <span class="cm-kw">embed</span>(<span class="cm-str">query</span>) <span class="cm-comment">→ [0.032, -0.118, 0.245, ... 768 dims]</span></div>
+          <div style="margin-top:8px"><span class="cm-comment">// Step 2: Hybrid search</span></div>
+          <div><span class="cm-key">semantic</span>  = <span class="cm-kw">cosine_similarity</span>(vector, chunks) <span class="cm-comment">→ top 5</span></div>
+          <div><span class="cm-key">keyword</span>   = <span class="cm-kw">ts_rank</span>(<span class="cm-str">'solar & O&M & Africa'</span>) <span class="cm-comment">→ top 5</span></div>
+          <div><span class="cm-key">combined</span>  = <span class="cm-num">0.7</span> × semantic + <span class="cm-num">0.3</span> × keyword</div>
+          <div style="margin-top:8px"><span class="cm-comment">// Step 3: Generate with sources</span></div>
+          <div><span class="cm-key">answer</span> = <span class="cm-kw">mistral</span>(prompt_template + top_chunks)</div>
+          <div><span class="cm-comment">// → "$4.3M annual, $28.5/kW/year [source: Noor III report]"</span></div>
+        </div>
+      </div>
+      <div class="hero-feat-text">
+        <h3>Semantic + keyword, combined</h3>
+        <p>"Solar PV maintenance costs" finds "O&M budget for photovoltaic installations" — semantic search understands meaning, not just words. Keyword search catches exact technical terms that embeddings might miss.</p>
+        <p>Configurable weight lets you tune the balance: more semantic for exploratory questions, more keyword for exact technical lookups.</p>
+        <h3 style="margin-top:1.5rem">Chat with your knowledge base</h3>
+        <p>Ask questions in natural language. Sources displayed with similarity scores. Streaming responses via Ollama. Save useful conversations as new posts for future reference.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 4. KNOWLEDGE GRAPH ═══ -->
+<section class="feat-section" id="graph">
+  <div class="feat-inner">
+    <div class="section-label">Knowledge Graph</div>
+    <h2 class="section-title">See how your knowledge connects</h2>
+    <p class="section-desc">Visual representation of document connections — discover relationships that folder structures hide.</p>
+
+    <div class="hero-feat">
+      <div>
+        <div class="hero-feat-visual">
+          <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.3);margin-bottom:1rem;font-weight:600">Knowledge Graph Visualization</div>
+          <div class="graph-mock">
+            <svg width="100%" height="260" viewBox="0 0 500 260">
+              <!-- Edges -->
+              <line x1="250" y1="80" x2="120" y2="140" stroke="#5cb87a" stroke-width="1.5" opacity="0.25"/>
+              <line x1="250" y1="80" x2="380" y2="120" stroke="#5cb87a" stroke-width="2" opacity="0.35"/>
+              <line x1="250" y1="80" x2="200" y2="200" stroke="#5cb87a" stroke-width="1" opacity="0.2"/>
+              <line x1="120" y1="140" x2="200" y2="200" stroke="#a8e6c3" stroke-width="1.5" opacity="0.2"/>
+              <line x1="380" y1="120" x2="420" y2="210" stroke="#5cb87a" stroke-width="1" opacity="0.2"/>
+              <line x1="250" y1="80" x2="80" y2="60" stroke="#e8a838" stroke-width="1.5" opacity="0.3" stroke-dasharray="4,3"/>
+              <line x1="120" y1="140" x2="80" y2="60" stroke="#e8a838" stroke-width="1" opacity="0.2" stroke-dasharray="4,3"/>
+              <line x1="380" y1="120" x2="340" y2="220" stroke="#a8e6c3" stroke-width="1" opacity="0.15"/>
+              <line x1="200" y1="200" x2="340" y2="220" stroke="#5cb87a" stroke-width="1" opacity="0.2"/>
+              <!-- Nodes -->
+              <circle cx="250" cy="80" r="22" fill="#3d8b63" opacity="0.9"/><text x="250" y="84" text-anchor="middle" fill="white" font-size="7" font-family="JetBrains Mono">Migration</text>
+              <circle cx="120" cy="140" r="18" fill="#4a7ad9" opacity="0.8"/><text x="120" y="144" text-anchor="middle" fill="white" font-size="6" font-family="JetBrains Mono">O&M</text>
+              <circle cx="380" cy="120" r="20" fill="#3d8b63" opacity="0.85"/><text x="380" y="124" text-anchor="middle" fill="white" font-size="6" font-family="JetBrains Mono">CAPEX</text>
+              <circle cx="200" cy="200" r="16" fill="#9b6dd7" opacity="0.75"/><text x="200" y="204" text-anchor="middle" fill="white" font-size="6" font-family="JetBrains Mono">Risk</text>
+              <circle cx="80" cy="60" r="14" fill="#e8a838" opacity="0.7"/><text x="80" y="64" text-anchor="middle" fill="white" font-size="6" font-family="JetBrains Mono">MENA</text>
+              <circle cx="420" cy="210" r="13" fill="#4a7ad9" opacity="0.6"/><text x="420" y="214" text-anchor="middle" fill="white" font-size="6" font-family="JetBrains Mono">DSCR</text>
+              <circle cx="340" cy="220" r="14" fill="#9b6dd7" opacity="0.65"/><text x="340" y="224" text-anchor="middle" fill="white" font-size="6" font-family="JetBrains Mono">EPC</text>
+            </svg>
+            <div style="display:flex;gap:1.5rem;padding-top:0.5rem;font-size:0.68rem">
+              <span style="color:var(--leaf-light)">━ Semantic similarity</span>
+              <span style="color:var(--amber-light)">╌ Shared tags</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="hero-feat-text">
+        <h3>Two types of connections</h3>
+        <p><strong style="color:var(--canopy)">Semantic edges</strong> — Posts linked by embedding similarity when above a configurable threshold (default: 65%). Discovers relationships that humans wouldn't manually tag.</p>
+        <p><strong style="color:var(--amber)">Tag edges</strong> — Posts linked by shared tags using Jaccard similarity. Explicit connections based on your classification choices.</p>
+        <h3 style="margin-top:1.5rem">Interactive exploration</h3>
+        <p>Click nodes to navigate directly to posts. Zoom and pan across your knowledge landscape. Filter by category and adjust the similarity threshold to reveal stronger or weaker connections.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 5. WORKFLOWS ═══ -->
+<section class="feat-section" id="workflows">
+  <div class="feat-inner">
+    <div class="section-label">Workflows</div>
+    <h2 class="section-title">Multi-step LLM pipelines — defined as wiki posts</h2>
+    <p class="section-desc">Chain multiple AI steps with variable interpolation. Each step can inject RAG context. Results saved as new posts. No code required.</p>
+
+    <div class="hero-feat">
+      <div class="hero-feat-text">
+        <h3>Write workflows in markdown</h3>
+        <p>Define workflows directly in the wiki editor using step markers. Each step's output becomes a variable available to subsequent steps — <code style="background:var(--cream-dark);padding:2px 6px;border-radius:4px;font-size:0.85em">{{step1}}</code> feeds into Step 2, and so on.</p>
+        <p>RAG context is injected at each step, so every stage of the pipeline has access to your full knowledge base. Results stream in real-time and are automatically saved as new posts.</p>
+        <div class="feat-card-tags" style="margin-top:1rem">
+          <span class="feat-card-tag">Sequential execution</span>
+          <span class="feat-card-tag">Variable interpolation</span>
+          <span class="feat-card-tag">RAG at each step</span>
+          <span class="feat-card-tag">Auto-save results</span>
+        </div>
+      </div>
+      <div class="hero-feat-visual">
+        <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.3);margin-bottom:1rem;font-weight:600">Workflow Definition</div>
+        <div class="workflow-mock">
+          <div class="wf-step wf-step-active">
+            <div><span class="wf-h">## Step 1: Summarize</span></div>
+            <div><span class="wf-t">Summarize the document: </span><span class="wf-v">{{input}}</span></div>
+          </div>
+          <div class="wf-step">
+            <div><span class="wf-h">## Step 2: Extract Entities</span></div>
+            <div><span class="wf-t">Extract key entities from: </span><span class="wf-v">{{step1}}</span></div>
+          </div>
+          <div class="wf-step">
+            <div><span class="wf-h">## Step 3: Final Report</span></div>
+            <div><span class="wf-t">Create structured report from </span><span class="wf-v">{{step1}}</span><span class="wf-t"> and </span><span class="wf-v">{{step2}}</span></div>
+          </div>
+        </div>
+        <div style="margin-top:1rem;padding:10px 14px;background:rgba(92,184,122,0.08);border:1px solid rgba(92,184,122,0.15);border-radius:8px;font-size:0.75rem;color:var(--leaf-light)">
+          ✦ Result saved as post → immediately searchable & vectorized
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 6. ENRICHMENT ═══ -->
+<section class="feat-section" id="enrichment">
+  <div class="feat-inner">
+    <div class="section-label">Document Enrichment</div>
+    <h2 class="section-title">AI classifies and enriches every document</h2>
+    <p class="section-desc">Automatic classification via LLM — every document gets a doc type, quality score, summary, and topic extraction without manual effort.</p>
+
+    <div class="feat-grid">
+      <div class="feat-card">
+        <div class="feat-card-icon fci-purple">📋</div>
+        <h4>Doc Type Classification</h4>
+        <p>AI determines if a post is a technical document, meeting notes, report, correspondence, tutorial, or other type. Classification drives search filtering and template matching.</p>
+        <div class="feat-card-tags">
+          <span class="feat-card-tag">technicaldoc</span>
+          <span class="feat-card-tag">meeting</span>
+          <span class="feat-card-tag">report</span>
+          <span class="feat-card-tag">correspondence</span>
+        </div>
+      </div>
+
+      <div class="feat-card">
+        <div class="feat-card-icon fci-amber">⭐</div>
+        <h4>Quality Scoring</h4>
+        <p>Content quality rated by AI based on completeness, structure, clarity, and sourcing. Helps knowledge managers prioritize curation efforts and surface the best content first.</p>
+      </div>
+
+      <div class="feat-card">
+        <div class="feat-card-icon fci-green">📝</div>
+        <h4>Auto-Summary</h4>
+        <p>AI generates a concise summary for every document on save. Summaries appear in search results and folder views, helping users find the right content without opening every post.</p>
+      </div>
+
+      <div class="feat-card">
+        <div class="feat-card-icon fci-blue">🔖</div>
+        <h4>Topic Extraction</h4>
+        <p>Key topics automatically extracted and stored as structured metadata. Powers topic-based navigation, trend analysis, and cross-document discovery across your knowledge base.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 7. PERMISSIONS ═══ -->
+<section class="feat-section" id="permissions">
+  <div class="feat-inner">
+    <div class="section-label">Permissions & Groups</div>
+    <h2 class="section-title">Share the knowledge, protect the access</h2>
+    <p class="section-desc">Group-based access control enforced at every level — from folder browsing to search results to RAG chat answers.</p>
+
+    <div class="feat-grid">
+      <div class="feat-card">
+        <div class="feat-card-icon fci-green">👤</div>
+        <h4>User Roles</h4>
+        <p>Admin and User roles with distinct capabilities. Admins manage groups, configure taxonomy, and control platform settings. Users create, edit, and consume knowledge.</p>
+      </div>
+
+      <div class="feat-card">
+        <div class="feat-card-icon fci-blue">👥</div>
+        <h4>Groups</h4>
+        <p>Create groups and add members. Groups map to organizational units, project teams, or access tiers. A user can belong to multiple groups simultaneously.</p>
+      </div>
+
+      <div class="feat-card">
+        <div class="feat-card-icon fci-purple">👁️</div>
+        <h4>Three Visibility Levels</h4>
+        <p><strong>Public</strong> — anyone can view. <strong>Private</strong> — only the author. <strong>Groups</strong> — only members of specified groups. Enforced at query time across search, browse, and chat.</p>
+      </div>
+
+      <div class="feat-card">
+        <div class="feat-card-icon fci-amber">🔑</div>
+        <h4>Read/Write Permissions</h4>
+        <p>Granular access control beyond visibility. Control who can edit, comment, assign, and manage posts independently of who can read them. Perfect for regulated environments.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 8. API ═══ -->
+<section class="feat-section" id="api">
+  <div class="feat-inner">
+    <div class="section-label">API</div>
+    <h2 class="section-title">Fully programmable via REST API</h2>
+    <p class="section-desc">Every feature accessible programmatically. Integrate ArborSpace into your existing tools, build custom frontends, or automate document pipelines.</p>
+
+    <div class="api-grid">
+      <div class="api-group">
+        <h4><span>💬</span> Chat</h4>
+        <div class="api-endpoint"><span class="api-method api-post">POST</span> <span class="api-path">/api/chat</span></div>
+        <div class="api-endpoint"><span class="api-method api-post">POST</span> <span class="api-path">/api/chat/save</span></div>
+      </div>
+
+      <div class="api-group">
+        <h4><span>🔍</span> Search</h4>
+        <div class="api-endpoint"><span class="api-method api-get">GET</span> <span class="api-path">/api/search/hybrid</span></div>
+      </div>
+
+      <div class="api-group">
+        <h4><span>📄</span> Posts & Import</h4>
+        <div class="api-endpoint"><span class="api-method api-post">POST</span> <span class="api-path">/api/posts/import-url</span></div>
+        <div class="api-endpoint"><span class="api-method api-post">POST</span> <span class="api-path">/api/posts/extract-url</span></div>
+        <div class="api-endpoint"><span class="api-method api-post">POST</span> <span class="api-path">/api/documents/extract</span></div>
+      </div>
+
+      <div class="api-group">
+        <h4><span>🕸️</span> Graph</h4>
+        <div class="api-endpoint"><span class="api-method api-get">GET</span> <span class="api-path">/api/graph</span></div>
+      </div>
+
+      <div class="api-group">
+        <h4><span>⚙️</span> Workflows</h4>
+        <div class="api-endpoint"><span class="api-method api-post">POST</span> <span class="api-path">/api/workflow/execute</span></div>
+        <div class="api-endpoint"><span class="api-method api-get">GET</span> <span class="api-path">/api/workflow</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 9. STACK ═══ -->
+<section class="feat-section" id="stack">
+  <div class="feat-inner">
+    <div class="section-label">Technical Stack</div>
+    <h2 class="section-title">Open source, all the way down</h2>
+    <p class="section-desc">Three components. Zero external dependencies. Deploy on any Linux server with Docker Compose.</p>
+
+    <div class="stack-grid">
+      <div class="stack-item">
+        <div class="stack-item-icon">⚡</div>
+        <h4>SvelteKit</h4>
+        <p>Frontend + Server</p>
+      </div>
+      <div class="stack-item">
+        <div class="stack-item-icon">✏️</div>
+        <h4>TipTap</h4>
+        <p>Rich Text Editor</p>
+      </div>
+      <div class="stack-item">
+        <div class="stack-item-icon">🐘</div>
+        <h4>PostgreSQL</h4>
+        <p>Database + pgvector</p>
+      </div>
+      <div class="stack-item">
+        <div class="stack-item-icon">🧭</div>
+        <h4>nomic-embed</h4>
+        <p>768-dim Embeddings</p>
+      </div>
+      <div class="stack-item">
+        <div class="stack-item-icon">🧠</div>
+        <h4>Ollama</h4>
+        <p>Local AI Runtime</p>
+      </div>
+      <div class="stack-item">
+        <div class="stack-item-icon">🤖</div>
+        <h4>Mistral</h4>
+        <p>LLM Generation</p>
+      </div>
+      <div class="stack-item">
+        <div class="stack-item-icon">🔍</div>
+        <h4>Hybrid Search</h4>
+        <p>Semantic + Keyword</p>
+      </div>
+      <div class="stack-item">
+        <div class="stack-item-icon">🔐</div>
+        <h4>JWT Auth</h4>
+        <p>Session-based</p>
+      </div>
+    </div>
+
+    <!-- Quick Start -->
+    <div style="margin-top:4rem">
+      <h3 class="section-title" style="font-size:1.6rem;text-align:center">From zero to knowledge in five steps</h3>
+      <div class="quickstart">
+        <div class="qs-step">
+          <div class="qs-num">1</div>
+          <h5>Create a Post</h5>
+          <p>Write or import content from any supported format</p>
+        </div>
+        <div class="qs-step">
+          <div class="qs-num">2</div>
+          <h5>Vectorize</h5>
+          <p>Click "Vectorize" to enable RAG search on your content</p>
+        </div>
+        <div class="qs-step">
+          <div class="qs-num">3</div>
+          <h5>Chat</h5>
+          <p>Ask questions in the Chat page — AI answers with sources</p>
+        </div>
+        <div class="qs-step">
+          <div class="qs-num">4</div>
+          <h5>Save Insights</h5>
+          <p>Save useful conversations as posts for future reference</p>
+        </div>
+        <div class="qs-step">
+          <div class="qs-num">5</div>
+          <h5>Explore</h5>
+          <p>Use the Knowledge Graph to discover hidden connections</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+  <h2>Ready to grow your knowledge tree?</h2>
+  <p>Deploy in minutes with Docker Compose. Free, open source, and your data never leaves your network.</p>
+</section>
+
+<footer>
+  <div class="footer-inner" style="grid-template-columns:2fr 1fr 1fr">
+    <div class="footer-brand">
+      <a href="index.html" class="logo">
+        <svg viewBox="0 0 32 32" fill="none" width="32" height="32"><rect width="32" height="32" rx="8" fill="#0f2419"/><path d="M16 6 L16 18 M12 10 L16 14 M20 10 L16 14 M10 14 L16 20 M22 14 L16 20 M8 18 L16 26 M24 18 L16 26" stroke="#5cb87a" stroke-width="2" stroke-linecap="round"/></svg>
+        <span class="logo-text">ArborSpace</span>
+      </a>
+      <p>Structured knowledge for intelligent AI retrieval. Built in the French Alps. Open source forever.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Product</h4>
+      <a href="index.html">Home</a>
+      <a href="features.html">Features</a>
+      <a href="usecases.html">Use Cases</a>
+      <a href="services.html">Services</a>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <a href="/cdn-cgi/l/email-protection#93f9f6f2fde3fbfafff1e1f6eae0e0f6d3f4fef2faffbdf0fcfe"><span class="__cf_email__" data-cfemail="78121d1916081011141a0a1d010b0b1d381f15191114561b1715">[email&#160;protected]</span></a>
+      <a href="https://github.com/arborspace" target="_blank">GitHub</a>
+      <a href="https://linkedin.com" target="_blank">LinkedIn</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 ArborSpace. Open source under MIT license.</span>
+    <div style="display:flex;gap:1.5rem"><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Security</a></div>
+  </div>
+</footer>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  // Nav scroll
+  window.addEventListener('scroll',()=>{document.getElementById('nav').classList.toggle('scrolled',window.scrollY>10)});
+
+  // Feature nav active state
+  const sections=document.querySelectorAll('.feat-section');
+  const fnLinks=document.querySelectorAll('.feature-nav a');
+  const featureNavObserver=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        fnLinks.forEach(l=>l.classList.remove('fn-active'));
+        const target=document.querySelector(`.feature-nav a[href="#${e.target.id}"]`);
+        if(target)target.classList.add('fn-active');
+      }
+    });
+  },{rootMargin:'-200px 0px -60%',threshold:0});
+  sections.forEach(s=>featureNavObserver.observe(s));
+
+  // Scroll animations
+  const obs=new IntersectionObserver(e=>{e.forEach(el=>{if(el.isIntersecting){el.target.style.opacity='1';el.target.style.transform='translateY(0)'}})},{threshold:0.06});
+  document.querySelectorAll('.feat-card,

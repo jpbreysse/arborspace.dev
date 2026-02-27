@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ArborSpace — Use Cases</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{--forest:#0f2419;--forest-mid:#1a3a2a;--canopy:#3d8b63;--leaf:#5cb87a;--leaf-light:#a8e6c3;--amber:#e8a838;--amber-light:#f5d590;--cream:#faf8f4;--cream-dark:#f0ece4;--bark:#8b7355;--text-dark:#1a1a18;--text-mid:#4a4a45;--text-light:#7a7a72;--white:#ffffff;--blue:#4a7ad9;--blue-light:#a3c8f0;--purple:#9b6dd7;--purple-light:#d4a8f5;--red:#d94a4a;--radius:12px;--radius-lg:20px;--shadow-sm:0 2px 8px rgba(15,36,25,0.06);--shadow-md:0 8px 32px rgba(15,36,25,0.10);--shadow-lg:0 16px 64px rgba(15,36,25,0.14)}
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{font-family:'Outfit',sans-serif;background:var(--cream);color:var(--text-dark);line-height:1.6;overflow-x:hidden}
+
+  /* NAV */
+  nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(250,248,244,0.88);backdrop-filter:blur(20px);border-bottom:1px solid rgba(15,36,25,0.06)}
+  nav.scrolled{box-shadow:var(--shadow-sm)}
+  .nav-inner{max-width:1200px;margin:0 auto;padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:72px}
+  .logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--forest)}
+  .logo svg{width:32px;height:32px}
+  .logo-text{font-family:'DM Serif Display',serif;font-size:1.35rem;letter-spacing:-0.02em}
+  .nav-links{display:flex;align-items:center;gap:2rem}
+  .nav-links a{text-decoration:none;color:var(--text-mid);font-weight:500;font-size:0.95rem;transition:color 0.2s;position:relative}
+  .nav-links a:hover{color:var(--forest)}
+  .nav-links a.active{color:var(--forest);font-weight:600}
+  .nav-links a.active::after{content:'';position:absolute;bottom:-4px;left:0;right:0;height:2px;background:var(--canopy);border-radius:1px}
+  .nav-cta{background:var(--forest)!important;color:var(--white)!important;padding:10px 22px!important;border-radius:8px;font-weight:600!important;transition:all 0.25s!important}
+  .nav-cta:hover{background:var(--forest-mid)!important;transform:translateY(-1px)}
+  .nav-cta::after{display:none!important}
+
+  /* HEADER */
+  .page-header{padding:150px 2rem 60px;text-align:center;position:relative}
+  .page-header::before{content:'';position:absolute;top:-150px;left:50%;transform:translateX(-50%);width:800px;height:800px;background:radial-gradient(circle,rgba(232,168,56,0.06) 0%,transparent 70%);pointer-events:none}
+  .section-label{font-size:0.8rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--canopy);font-weight:600;margin-bottom:1rem}
+  .page-header h1{font-family:'DM Serif Display',serif;font-size:clamp(2.5rem,5vw,3.8rem);color:var(--forest);letter-spacing:-0.03em;margin-bottom:1.2rem;max-width:750px;margin-left:auto;margin-right:auto}
+  .page-header h1 em{font-style:italic;color:var(--canopy)}
+  .page-header p{font-size:1.15rem;color:var(--text-mid);max-width:640px;margin:0 auto;font-weight:300;line-height:1.7}
+
+  /* USE CASE BLOCK */
+  .uc{padding:5rem 2rem;scroll-margin-top:80px}
+  .uc:nth-child(even){background:var(--white)}
+  .uc-inner{max-width:1100px;margin:0 auto}
+  .uc-header{display:flex;align-items:flex-start;gap:1.5rem;margin-bottom:3rem}
+  .uc-num{flex-shrink:0;width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:1.1rem;font-weight:700}
+  .uc-n1{background:rgba(61,139,99,0.08);color:var(--canopy)}
+  .uc-n2{background:rgba(74,122,217,0.08);color:var(--blue)}
+  .uc-n3{background:rgba(232,168,56,0.08);color:var(--amber)}
+  .uc-header-text h2{font-family:'DM Serif Display',serif;font-size:clamp(1.8rem,3vw,2.4rem);color:var(--forest);letter-spacing:-0.02em;margin-bottom:0.4rem}
+  .uc-header-text .uc-tagline{font-size:1.05rem;color:var(--canopy);font-weight:500}
+  .uc-header-text p{color:var(--text-mid);font-weight:300;line-height:1.8;margin-top:0.8rem;max-width:650px;font-size:0.98rem}
+
+  /* Scenario */
+  .uc-scenario{background:var(--forest);border-radius:var(--radius-lg);padding:2.5rem;margin-bottom:2rem;color:var(--white);position:relative;overflow:hidden}
+  .uc-scenario::before{content:'';position:absolute;top:-80px;right:-80px;width:250px;height:250px;background:radial-gradient(circle,rgba(92,184,122,0.08) 0%,transparent 70%);pointer-events:none}
+  .uc-scenario-label{font-size:0.7rem;text-transform:uppercase;letter-spacing:0.12em;color:rgba(255,255,255,0.35);font-weight:600;margin-bottom:1rem}
+  .uc-scenario h3{font-family:'DM Serif Display',serif;font-size:1.3rem;color:var(--white);margin-bottom:0.6rem}
+  .uc-scenario>p{color:rgba(255,255,255,0.6);font-weight:300;font-size:0.9rem;line-height:1.7;max-width:700px}
+  .uc-actors{display:flex;gap:1rem;margin-top:1.5rem;flex-wrap:wrap}
+  .uc-actor{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);padding:8px 16px;border-radius:10px;font-size:0.82rem;color:rgba(255,255,255,0.7)}
+  .uc-actor strong{color:var(--white);font-weight:600}
+
+  /* Mock */
+  .uc-mock{background:var(--forest);border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-lg);border:1px solid rgba(61,139,99,0.15);margin-bottom:2rem}
+  .uc-mock-bar{display:flex;align-items:center;gap:8px;padding:12px 16px;background:rgba(255,255,255,0.04);border-bottom:1px solid rgba(255,255,255,0.06)}
+  .uc-mock-bar span{width:10px;height:10px;border-radius:50%}
+  .uc-mock-bar span:nth-child(1){background:#ff5f57}
+  .uc-mock-bar span:nth-child(2){background:#ffbd2e}
+  .uc-mock-bar span:nth-child(3){background:#28c840}
+  .uc-mock-bar-title{margin-left:12px;font-size:0.72rem;color:rgba(255,255,255,0.35);font-family:'JetBrains Mono',monospace}
+  .uc-mock-content{display:grid;grid-template-columns:220px 1fr;min-height:400px}
+  .uc-mock-sidebar{background:rgba(255,255,255,0.02);border-right:1px solid rgba(255,255,255,0.06);padding:1rem}
+  .uc-mock-sidebar-title{font-size:0.65rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.3);font-weight:600;margin-bottom:0.6rem}
+  .mt-item{display:flex;align-items:center;gap:7px;padding:5px 8px;border-radius:6px;font-size:0.75rem;color:rgba(255,255,255,0.55);cursor:default;transition:all 0.2s}
+  .mt-item:hover{background:rgba(255,255,255,0.04);color:rgba(255,255,255,0.8)}
+  .mt-item.mt-active{background:rgba(92,184,122,0.12);color:var(--leaf-light)}
+  .mt-indent{padding-left:24px}
+  .mt-badge{margin-left:auto;font-size:0.58rem;font-family:'JetBrains Mono',monospace;padding:2px 5px;border-radius:3px;font-weight:600;white-space:nowrap}
+  .mt-badge-doc{background:rgba(92,184,122,0.12);color:var(--leaf-light)}
+  .mt-badge-tkt{background:rgba(74,122,217,0.12);color:var(--blue-light)}
+  .mt-badge-ms{background:rgba(232,168,56,0.15);color:var(--amber-light)}
+  .mt-badge-ai{background:rgba(155,109,215,0.15);color:var(--purple-light)}
+  .mt-badge-wf{background:rgba(232,168,56,0.12);color:var(--amber-light)}
+  .mt-badge-draft{background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.3)}
+  .mt-badge-priv{background:rgba(217,74,74,0.12);color:#f5a3a3}
+  .uc-mock-main{padding:1.2rem 1.5rem;overflow:hidden}
+  .uc-mock-main h3{font-family:'DM Serif Display',serif;font-size:1.15rem;color:var(--white);margin-bottom:0.3rem}
+  .uc-mock-meta{display:flex;align-items:center;gap:12px;font-size:0.72rem;color:rgba(255,255,255,0.35);margin-bottom:1rem;flex-wrap:wrap}
+  .uc-mock-meta-tag{padding:2px 8px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-weight:500}
+  .uc-mock-body{font-size:0.82rem;color:rgba(255,255,255,0.5);line-height:1.7;margin-bottom:1rem}
+
+  /* Activity feed */
+  .uc-mock-feed{display:flex;flex-direction:column;gap:0.5rem}
+  .uc-mock-event{display:flex;align-items:flex-start;gap:10px;padding:8px 12px;background:rgba(255,255,255,0.03);border-radius:8px;font-size:0.75rem;color:rgba(255,255,255,0.5)}
+  .uc-mock-event-avatar{width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:0.65rem;flex-shrink:0;font-weight:600}
+  .av-green{background:rgba(92,184,122,0.2);color:var(--leaf-light)}
+  .av-blue{background:rgba(74,122,217,0.2);color:var(--blue-light)}
+  .av-amber{background:rgba(232,168,56,0.2);color:var(--amber-light)}
+  .av-purple{background:rgba(155,109,215,0.2);color:var(--purple-light)}
+  .av-ai{background:rgba(155,109,215,0.2);color:var(--purple-light)}
+  .av-red{background:rgba(217,74,74,0.15);color:#f5a3a3}
+  .uc-mock-event strong{color:rgba(255,255,255,0.75);font-weight:600}
+  .uc-mock-event-time{margin-left:auto;color:rgba(255,255,255,0.2);font-size:0.65rem;white-space:nowrap}
+
+  /* AI card */
+  .ai-card{background:rgba(155,109,215,0.06);border:1px solid rgba(155,109,215,0.15);border-radius:10px;padding:12px 14px;margin-bottom:0.8rem}
+  .ai-card-header{display:flex;align-items:center;gap:8px;font-size:0.72rem;color:var(--purple-light);font-weight:600;margin-bottom:6px}
+  .ai-card p{font-size:0.75rem;color:rgba(255,255,255,0.5);line-height:1.6}
+  .ai-card-tags{display:flex;gap:5px;margin-top:8px;flex-wrap:wrap}
+  .ai-card-tag{font-size:0.62rem;padding:2px 7px;border-radius:4px;font-family:'JetBrains Mono',monospace;background:rgba(155,109,215,0.1);color:#c496e8}
+
+  /* Game theory cards */
+  .gt-card{background:rgba(232,168,56,0.06);border:1px solid rgba(232,168,56,0.15);border-radius:10px;padding:12px 14px;margin-bottom:0.8rem}
+  .gt-card-header{display:flex;align-items:center;gap:8px;font-size:0.72rem;color:var(--amber);font-weight:600;margin-bottom:6px}
+  .gt-card p{font-size:0.75rem;color:rgba(255,255,255,0.5);line-height:1.6}
+  .gt-scores{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+  .gt-score{padding:4px 10px;border-radius:6px;font-size:0.68rem;font-family:'JetBrains Mono',monospace;font-weight:600}
+  .gt-good{background:rgba(92,184,122,0.12);color:var(--leaf-light)}
+  .gt-warn{background:rgba(232,168,56,0.12);color:var(--amber-light)}
+  .gt-bad{background:rgba(217,74,74,0.12);color:#f5a3a3}
+
+  /* Workflow mock */
+  .wf-mock{font-family:'JetBrains Mono',monospace;font-size:0.75rem;line-height:1.7;margin-bottom:1rem}
+  .wf-step{padding:8px 12px;background:rgba(255,255,255,0.04);border-radius:8px;margin-bottom:4px;border-left:3px solid transparent}
+  .wf-step-done{border-left-color:var(--leaf);opacity:0.7}
+  .wf-step-active{border-left-color:var(--amber);background:rgba(255,255,255,0.06)}
+  .wf-step-pending{opacity:0.4}
+  .wf-h{color:var(--leaf-light);font-weight:600}
+  .wf-t{color:rgba(255,255,255,0.5)}
+  .wf-v{color:var(--amber-light)}
+
+  /* Phase cards */
+  .uc-workflow{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.2rem;margin-bottom:2rem}
+  .uc-phase{background:var(--white);border:1px solid rgba(15,36,25,0.06);border-radius:var(--radius-lg);padding:2rem;transition:all 0.3s}
+  .uc:nth-child(even) .uc-phase{background:var(--cream)}
+  .uc-phase:hover{transform:translateY(-3px);box-shadow:var(--shadow-sm);border-color:rgba(61,139,99,0.12)}
+  .uc-phase-header{display:flex;align-items:center;gap:10px;margin-bottom:1rem}
+  .uc-phase-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;background:rgba(61,139,99,0.08)}
+  .uc-phase-icon.pi-blue{background:rgba(74,122,217,0.08)}
+  .uc-phase-icon.pi-purple{background:rgba(155,109,215,0.08)}
+  .uc-phase-icon.pi-amber{background:rgba(232,168,56,0.08)}
+  .uc-phase-header h4{font-family:'DM Serif Display',serif;font-size:1.05rem;color:var(--forest)}
+  .uc-phase-step{display:flex;align-items:flex-start;gap:10px;padding:6px 0;font-size:0.85rem;color:var(--text-mid);line-height:1.5}
+  .uc-phase-step::before{content:'→';color:var(--canopy);font-weight:700;flex-shrink:0;margin-top:1px}
+  .uc-phase-step strong{color:var(--text-dark);font-weight:600}
+  .uc-phase-note{margin-top:0.8rem;padding:8px 12px;border-left:3px solid var(--canopy);border-radius:0 8px 8px 0;font-size:0.78rem;color:var(--canopy);font-weight:500;background:rgba(61,139,99,0.04)}
+  .uc-phase-note.pn-blue{border-left-color:var(--blue);color:var(--blue);background:rgba(74,122,217,0.04)}
+  .uc-phase-note.pn-purple{border-left-color:var(--purple);color:var(--purple);background:rgba(155,109,215,0.04)}
+  .uc-phase-note.pn-amber{border-left-color:var(--amber);color:var(--bark);background:rgba(232,168,56,0.04)}
+
+  /* Outcomes */
+  .uc-outcomes{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem}
+  .uc-outcome{text-align:center;padding:1.5rem 1rem;background:var(--white);border:1px solid rgba(15,36,25,0.05);border-radius:var(--radius);transition:all 0.3s}
+  .uc:nth-child(even) .uc-outcome{background:var(--cream)}
+  .uc-outcome:hover{transform:translateY(-2px);box-shadow:var(--shadow-sm)}
+  .uc-outcome-val{font-family:'JetBrains Mono',monospace;font-size:1.6rem;font-weight:700;color:var(--canopy)}
+  .uc-outcome-label{font-size:0.8rem;color:var(--text-light);margin-top:0.2rem}
+
+  /* Complexity levels */
+  .levels{display:grid;grid-template-columns:repeat(4,1fr);gap:0.8rem;margin-bottom:2rem}
+  .level{padding:1.2rem;border-radius:var(--radius);border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.03);text-align:center;transition:all 0.3s}
+  .level:hover{background:rgba(255,255,255,0.06);transform:translateY(-2px)}
+  .level-num{font-family:'JetBrains Mono',monospace;font-size:0.65rem;color:rgba(255,255,255,0.3);margin-bottom:0.3rem;font-weight:600}
+  .level h5{font-size:0.85rem;color:var(--white);margin-bottom:0.4rem}
+  .level p{font-size:0.7rem;color:rgba(255,255,255,0.4);line-height:1.5}
+  .level-ex{font-family:'JetBrains Mono',monospace;font-size:0.65rem;color:rgba(255,255,255,0.25);margin-top:0.5rem;font-style:italic}
+  .level-tag{margin-top:0.5rem;font-size:0.6rem;padding:2px 8px;border-radius:4px;display:inline-block;font-family:'JetBrains Mono',monospace;font-weight:600}
+  .lt-free{background:rgba(92,184,122,0.12);color:var(--leaf-light)}
+  .lt-config{background:rgba(232,168,56,0.12);color:var(--amber-light)}
+  .lt-custom{background:rgba(74,122,217,0.12);color:var(--blue-light)}
+  .lt-future{background:rgba(155,109,215,0.12);color:var(--purple-light)}
+
+  /* CTA */
+  .cta{padding:6rem 2rem;text-align:center;background:var(--forest);position:relative;overflow:hidden}
+  .cta::before{content:'';position:absolute;top:-200px;left:50%;transform:translateX(-50%);width:800px;height:800px;background:radial-gradient(circle,rgba(92,184,122,0.1) 0%,transparent 70%);pointer-events:none}
+  .cta h2{font-family:'DM Serif Display',serif;font-size:clamp(2rem,4vw,2.6rem);color:var(--white);margin-bottom:1rem}
+  .cta p{color:rgba(255,255,255,0.6);font-size:1.05rem;margin-bottom:2.5rem;font-weight:300;max-width:500px;margin-left:auto;margin-right:auto}
+  .cta-actions{display:flex;justify-content:center;gap:1rem;flex-wrap:wrap}
+  .btn-cta-w{background:var(--white);color:var(--forest);padding:14px 32px;border-radius:10px;font-weight:600;font-size:1rem;text-decoration:none;transition:all 0.25s}
+  .btn-cta-w:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.2)}
+  .btn-cta-o{background:transparent;color:var(--white);padding:14px 32px;border-radius:10px;font-weight:600;font-size:1rem;text-decoration:none;transition:all 0.25s;border:1.5px solid rgba(255,255,255,0.25)}
+  .btn-cta-o:hover{border-color:rgba(255,255,255,0.5)}
+
+  /* FOOTER */
+  footer{background:var(--forest);color:rgba(255,255,255,0.6);padding:3rem 2rem 2rem;border-top:1px solid rgba(255,255,255,0.06)}
+  .footer-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr;gap:3rem;margin-bottom:2rem}
+  .footer-brand .logo-text{color:var(--white)}
+  .footer-brand p{margin-top:1rem;font-size:0.85rem;line-height:1.7;max-width:280px}
+  .footer-col h4{color:var(--white);font-weight:600;font-size:0.82rem;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:1rem}
+  .footer-col a{display:block;color:rgba(255,255,255,0.5);text-decoration:none;font-size:0.88rem;padding:3px 0;transition:color 0.2s}
+  .footer-col a:hover{color:var(--leaf-light)}
+  .footer-bottom{max-width:1100px;margin:0 auto;border-top:1px solid rgba(255,255,255,0.08);padding-top:1.5rem;display:flex;justify-content:space-between;font-size:0.78rem}
+  .footer-bottom a{color:rgba(255,255,255,0.4);text-decoration:none}
+
+  @media(max-width:768px){
+    .uc-mock-content{grid-template-columns:1fr}
+    .uc-mock-sidebar{display:none}
+    .uc-workflow{grid-template-columns:1fr}
+    .uc-header{flex-direction:column}
+    .levels{grid-template-columns:1fr 1fr}
+    .footer-inner{grid-template-columns:1fr 1fr}
+    .nav-links a:not(.nav-cta){display:none}
+  }
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="logo">
+      <svg viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="8" fill="#0f2419"/><path d="M16 6 L16 18 M12 10 L16 14 M20 10 L16 14 M10 14 L16 20 M22 14 L16 20 M8 18 L16 26 M24 18 L16 26" stroke="#5cb87a" stroke-width="2" stroke-linecap="round"/></svg>
+      <span class="logo-text">ArborSpace</span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="features.html">Features</a>
+      <a href="#" class="active">Use Cases</a>
+      <a href="services.html">Services</a>
+      <a href="mailto:jeanphilbreysse@gmail.com" class="nav-cta">Contact Us</a>
+    </div>
+  </div>
+</nav>
+
+<section class="page-header">
+  <div class="section-label">Use Cases</div>
+  <h1>One platform, <em>three forests</em></h1>
+  <p>ArborSpace adapts to how your teams work — from AI-powered due diligence and cross-company project wikis to intelligent support ticketing with game-theory evaluation.</p>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- UC1: DUE DILIGENCE FOR CONSULTING                         -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section class="uc" id="uc-dd">
+  <div class="uc-inner">
+    <div class="uc-header">
+      <div class="uc-num uc-n1">01</div>
+      <div class="uc-header-text">
+        <h2>AI-Powered Due Diligence</h2>
+        <div class="uc-tagline">Turn 15 years of consulting expertise into a sovereign competitive advantage.</div>
+        <p>A consulting firm ingests hundreds of technical reports, EPC contracts, financial models, and operational reviews into ArborSpace. Consultants use RAG chat, prompt templates, and multi-step workflows to extract insights, benchmark projects, and generate sourced analysis — with AI that understands domain taxonomy, not just keywords.</p>
+      </div>
+    </div>
+
+    <!-- Scenario -->
+    <div class="uc-scenario">
+      <div class="uc-scenario-label">Example Scenario</div>
+      <h3>Horizon Energy evaluates a 200 MW Solar PV project in Morocco</h3>
+      <p>The due diligence team needs to benchmark CAPEX, validate O&M assumptions, assess construction risk, and produce a sourced findings report — all cross-referenced against internal benchmarks from 6 previous MENA engagements. The entire analysis must stay on-premise due to lender NDA requirements.</p>
+      <div class="uc-actors">
+        <div class="uc-actor"><span>👔</span> <strong>Senior Partner</strong> — curates templates & frameworks</div>
+        <div class="uc-actor"><span>📊</span> <strong>Analyst</strong> — runs queries & benchmarks</div>
+        <div class="uc-actor"><span>🤖</span> <strong>RAG Engine</strong> — retrieves, synthesizes, cites</div>
+      </div>
+    </div>
+
+    <!-- Product mock: RAG chat + benchmark -->
+    <div class="uc-mock">
+      <div class="uc-mock-bar">
+        <span></span><span></span><span></span>
+        <span class="uc-mock-bar-title">arborspace.dev / horizon-energy / chat</span>
+      </div>
+      <div class="uc-mock-content">
+        <div class="uc-mock-sidebar">
+          <div class="uc-mock-sidebar-title">Knowledge Tree</div>
+          <div class="mt-item"><span>📁</span> Methodologies</div>
+          <div class="mt-item mt-indent"><span>📄</span> Benchmark Template <span class="mt-badge mt-badge-ai">PROMPT</span></div>
+          <div class="mt-item mt-indent"><span>📄</span> Red Flag Checklist <span class="mt-badge mt-badge-ai">PROMPT</span></div>
+          <div class="mt-item"><span>📁</span> Solar PV — MENA</div>
+          <div class="mt-item mt-indent"><span>📄</span> Noor III — 150 MW <span class="mt-badge mt-badge-doc">DOC</span></div>
+          <div class="mt-item mt-indent mt-active"><span>📄</span> Jordan — 120 MW <span class="mt-badge mt-badge-doc">DOC</span></div>
+          <div class="mt-item mt-indent"><span>📄</span> Egypt — 200 MW <span class="mt-badge mt-badge-doc">DOC</span></div>
+          <div class="mt-item"><span>📁</span> Current — Morocco 200 MW</div>
+          <div class="mt-item mt-indent"><span>📄</span> EPC Contract <span class="mt-badge mt-badge-doc">PDF</span></div>
+          <div class="mt-item mt-indent"><span>📄</span> Financial Model <span class="mt-badge mt-badge-doc">XLSX</span></div>
+          <div class="mt-item mt-indent"><span>⚙️</span> Full Benchmark <span class="mt-badge mt-badge-wf">WFLOW</span></div>
+          <div class="mt-item"><span>📁</span> Wind — Europe</div>
+          <div class="mt-item"><span>🔒</span> Client Confidential <span class="mt-badge mt-badge-priv">PRIV</span></div>
+        </div>
+        <div class="uc-mock-main">
+          <div style="background:rgba(74,122,217,0.15);padding:10px 16px;border-radius:10px;color:var(--white);font-size:0.85rem;margin-bottom:1rem">
+            💬 What's the typical CAPEX range for bifacial solar PV in North Africa?
+          </div>
+
+          <div class="uc-mock-body">
+            Based on <strong style="color:var(--leaf-light)">[1] Noor III</strong>, <strong style="color:var(--leaf-light)">[2] Egypt 200MW</strong>, and <strong style="color:var(--leaf-light)">[3] Jordan 120MW</strong> reports, CAPEX for bifacial solar PV in MENA ranges from <strong style="color:var(--white)">$0.85–1.15M/MW</strong>. The Noor III project achieved $1,180/kW with LONGi bifacial modules at $0.24/Wp...
+          </div>
+
+          <div class="ai-card">
+            <div class="ai-card-header"><span>✦</span> Prompt Template: Benchmark Comparison</div>
+            <p>Running multi-step workflow: 5 sequential RAG searches across CAPEX, O&M, yield, DSCR, and EPC benchmarks. Synthesizing structured comparison table with PASS/FLAG/RED ratings.</p>
+            <div class="ai-card-tags">
+              <span class="ai-card-tag">Step 1/5: CAPEX ✓</span>
+              <span class="ai-card-tag">Step 2/5: O&M ✓</span>
+              <span class="ai-card-tag">Step 3/5: Yield ▶</span>
+              <span class="ai-card-tag">Step 4/5: DSCR …</span>
+              <span class="ai-card-tag">Step 5/5: Synthesis …</span>
+            </div>
+          </div>
+
+          <div class="uc-mock-feed" style="margin-top:1rem">
+            <div class="uc-mock-event">
+              <div class="uc-mock-event-avatar av-ai">AI</div>
+              <div><strong>RAG Engine</strong> retrieved 12 chunks from 8 reports — cosine similarity > 0.78 — filtered by category: Solar PV</div>
+              <span class="uc-mock-event-time">now</span>
+            </div>
+            <div class="uc-mock-event">
+              <div class="uc-mock-event-avatar av-green">SL</div>
+              <div><strong>Sarah (Analyst)</strong> saved benchmark result as post → "Morocco 200MW — CAPEX Benchmark" in Current folder</div>
+              <span class="uc-mock-event-time">2 min ago</span>
+            </div>
+            <div class="uc-mock-event">
+              <div class="uc-mock-event-avatar av-purple">AI</div>
+              <div><strong>Auto-classification</strong> assigned: doc_type=report, topics=[CAPEX, bifacial, MENA, benchmark], quality=0.89</div>
+              <span class="uc-mock-event-time">auto</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Question complexity levels -->
+    <div class="uc-scenario" style="padding:2rem 2.5rem">
+      <div class="uc-scenario-label">Question Complexity → Implementation Depth</div>
+      <h3>Not all questions are equal — each level unlocks more value</h3>
+      <div class="levels" style="margin-top:1.5rem">
+        <div class="level">
+          <div class="level-num">LEVEL 1</div>
+          <h5>Factual Retrieval</h5>
+          <p>Single chunk, one answer. Hybrid search returns a direct fact.</p>
+          <div class="level-ex">"Who was the EPC contractor on the Morocco project?"</div>
+          <div class="level-tag lt-free">Zero config</div>
+        </div>
+        <div class="level">
+          <div class="level-num">LEVEL 2</div>
+          <h5>Benchmark Comparison</h5>
+          <p>Search across multiple reports with structured prompt templates.</p>
+          <div class="level-ex">"Is $3.2M/MW realistic for bifacial in 2025?"</div>
+          <div class="level-tag lt-config">Prompt templates</div>
+        </div>
+        <div class="level">
+          <div class="level-num">LEVEL 3</div>
+          <h5>Multi-Step Analysis</h5>
+          <p>5 sequential RAG searches → merge → synthesize structured report.</p>
+          <div class="level-ex">"Build a full benchmark table vs. all MENA solar projects"</div>
+          <div class="level-tag lt-custom">Custom workflows</div>
+        </div>
+        <div class="level">
+          <div class="level-num">LEVEL 4</div>
+          <h5>Autonomous Agent</h5>
+          <p>Agent decides tools and execution order. Analyze, cross-reference, draft.</p>
+          <div class="level-ex">"Analyze this EPC contract and draft a risk memo"</div>
+          <div class="level-tag lt-future">Future roadmap</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Workflow phases -->
+    <div class="uc-workflow">
+      <div class="uc-phase">
+        <div class="uc-phase-header">
+          <div class="uc-phase-icon">📥</div>
+          <h4>Ingest & Vectorize</h4>
+        </div>
+        <div class="uc-phase-step"><strong>Import PDFs, Excel, Word</strong> — EPC contracts, financial models, operational reports</div>
+        <div class="uc-phase-step"><strong>Auto-chunking</strong> splits documents into ~500 char segments with overlap</div>
+        <div class="uc-phase-step"><strong>768-dim embeddings</strong> via nomic-embed-text, stored in pgvector</div>
+        <div class="uc-phase-note">Each chunk inherits the post's category, tags & permissions — search is always filtered and access-controlled</div>
+      </div>
+      <div class="uc-phase">
+        <div class="uc-phase-header">
+          <div class="uc-phase-icon pi-purple">✦</div>
+          <h4>Prompt Templates</h4>
+        </div>
+        <div class="uc-phase-step"><strong>Templates are wiki posts</strong> — senior consultants write and edit them, no developer needed</div>
+        <div class="uc-phase-step"><strong>Variable interpolation</strong> — {technology}, {region}, {threshold} filled at runtime</div>
+        <div class="uc-phase-step"><strong>Instant effect</strong> — save the template, next query uses the new version</div>
+        <div class="uc-phase-note pn-purple">When a senior consultant retires, their expertise lives on in the templates they crafted</div>
+      </div>
+      <div class="uc-phase">
+        <div class="uc-phase-header">
+          <div class="uc-phase-icon pi-blue">⚙️</div>
+          <h4>Multi-Step Workflows</h4>
+        </div>
+        <div class="uc-phase-step"><strong>Chain 5+ RAG steps</strong> — CAPEX → O&M → Yield → DSCR → Synthesis</div>
+        <div class="uc-phase-step"><strong>Each step queries</strong> the knowledge base independently with its own context</div>
+        <div class="uc-phase-step"><strong>Results saved as posts</strong> — immediately searchable and vectorized for future reference</div>
+        <div class="uc-phase-note pn-blue">Level 3 workflows automate recurring due diligence tasks — the highest-ROI customization</div>
+      </div>
+      <div class="uc-phase">
+        <div class="uc-phase-header">
+          <div class="uc-phase-icon pi-amber">🔒</div>
+          <h4>Sovereign & Compliant</h4>
+        </div>
+        <div class="uc-phase-step"><strong>100% on-premise</strong> — data never leaves the network, air-gapped if needed</div>
+        <div class="uc-phase-step"><strong>Lender-compliant</strong> — NDA-sensitive reports processed locally by Ollama</div>
+        <div class="uc-phase-step"><strong>Swap the LLM</strong> — Mistral 7B today, Qwen3 14B or Azure GPT-4o tomorrow, zero code changes</div>
+        <div class="uc-phase-note pn-amber">Client decides: on-premise for NDA docs, cloud for general analysis. Same platform, same code.</div>
+      </div>
+    </div>
+
+    <div class="uc-outcomes">
+      <div class="uc-outcome"><div class="uc-outcome-val">100ms</div><div class="uc-outcome-label">Search across 50K+ chunks</div></div>
+      <div class="uc-outcome"><div class="uc-outcome-val">6→1</div><div class="uc-outcome-label">Tools consolidated</div></div>
+      <div class="uc-outcome"><div class="uc-outcome-val">100%</div><div class="uc-outcome-label">Data sovereignty</div></div>
+      <div class="uc-outcome"><div class="uc-outcome-val">0</div><div class="uc-outcome-label">Vendor lock-in</div></div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- UC2: SUPPLIER ↔ CUSTOMER IMPLEMENTATION WIKI               -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section class="uc" id="uc-wiki">
+  <div class="uc-inner">
+    <div class="uc-header">
+      <div class="uc-num uc-n2">02</div>
+      <div class="uc-header-text">
+        <h2>Supplier–Customer Implementation Wiki</h2>
+        <div class="uc-tagline">One knowledge tree for two organizations. Full transparency, zero email chaos.</div>
+        <p>When a software vendor and a customer collaborate on an implementation project, they need shared documentation, milestone tracking, issue management, and a searchable history of every decision. ArborSpace gives both parties a shared tree — with group-based access that keeps internal content private while project content flows freely.</p>
+      </div>
+    </div>
+
+    <div class="uc-scenario">
+      <div class="uc-scenario-label">Example Scenario</div>
+      <h3>CloudERP SA implements its platform for Banque Léman</h3>
+      <p>A 6-month implementation covering requirements, configuration, data migration, UAT, and go-live. Both teams need joint documentation, a shared issue tracker, and an AI-searchable knowledge base that grows with the project — not a graveyard of SharePoint attachments.</p>
+      <div class="uc-actors">
+        <div class="uc-actor"><span>🏦</span> <strong>Banque Léman</strong> — Customer (bank)</div>
+        <div class="uc-actor"><span>💻</span> <strong>CloudERP SA</strong> — Supplier (vendor)</div>
+        <div class="uc-actor"><span>👥</span> <strong>PMs, BAs, developers, testers</strong></div>
+      </div>
+    </div>
+
+    <!-- Product mock: shared wiki -->
+    <div class="uc-mock">
+      <div class="uc-mock-bar">
+        <span></span><span></span><span></span>
+        <span class="uc-mock-bar-title">arborspace.dev / clouderp-banqueleman</span>
+      </div>
+      <div class="uc-mock-content">
+        <div class="uc-mock-sidebar">
+          <div class="uc-mock-sidebar-title">Project Tree</div>
+          <div class="mt-item"><span>📋</span> Project Charter <span class="mt-badge mt-badge-doc">DOC</span></div>
+          <div class="mt-item"><span>📁</span> Phase 1 — Requirements</div>
+          <div class="mt-item mt-indent"><span>📄</span> Functional Specs v3.2 <span class="mt-badge mt-badge-doc">DOC</span></div>
+          <div class="mt-item mt-indent"><span>📄</span> Gap Analysis <span class="mt-badge mt-badge-doc">DOC</span></div>
+          <div class="mt-item"><span>📁</span> Phase 2 — Configuration</div>
+          <div class="mt-item mt-indent mt-active"><span>📄</span> API Integration Guide <span class="mt-badge mt-badge-doc">DOC</span></div>
+          <div class="mt-item mt-indent"><span>📄</span> Data Mapping Rules <span class="mt-badge mt-badge-doc">DOC</span></div>
+          <div class="mt-item"><span>📁</span> Phase 3 — Migration</div>
+          <div class="mt-item"><span>📁</span> Phase 4 — UAT</div>
+          <div class="mt-item"><span>📁</span> Issues</div>
+          <div class="mt-item mt-indent"><span>🎫</span> ISS-024: Date format <span class="mt-badge mt-badge-tkt">OPEN</span></div>
+          <div class="mt-item mt-indent"><span>🎫</span> ISS-019: Auth flow <span class="mt-badge mt-badge-ms">FIXED</span></div>
+          <div class="mt-item"><span>📁</span> Milestones</div>
+          <div class="mt-item mt-indent"><span>🏁</span> MS-1: Spec Sign-off <span class="mt-badge mt-badge-doc">✓</span></div>
+          <div class="mt-item mt-indent"><span>🏁</span> MS-2: Config Complete <span class="mt-badge mt-badge-ms">DUE</span></div>
+          <div class="mt-item"><span>🔒</span> Internal — CloudERP <span class="mt-badge mt-badge-priv">PRIV</span></div>
+          <div class="mt-item"><span>🔒</span> Internal — Banque <span class="mt-badge mt-badge-priv">PRIV</span></div>
+        </div>
+        <div class="uc-mock-main">
+          <h3>API Integration Guide — Payment Gateway v2</h3>
+          <div class="uc-mock-meta">
+            <span class="uc-mock-meta-tag" style="background:rgba(92,184,122,0.12);color:var(--leaf-light)">DOC</span>
+            <span>Phase 2 — Configuration</span>
+            <span>Edited 1h ago by Lucas (CloudERP)</span>
+          </div>
+          <div class="uc-mock-body">
+            Integration specification for connecting Banque Léman's payment gateway (ISO 20022) with CloudERP's transaction module. Covers authentication flow, message format, error handling, and retry logic. Both teams contribute to this document — CloudERP writes the technical spec, Banque Léman validates against their infrastructure constraints.
+          </div>
+          <div class="uc-mock-feed">
+            <div class="uc-mock-event">
+              <div class="uc-mock-event-avatar av-blue">LC</div>
+              <div><strong>Lucas (CloudERP)</strong> updated Section 4 — ISO 20022 pain.001 mapping table revised</div>
+              <span class="uc-mock-event-time">1h ago</span>
+            </div>
+            <div class="uc-mock-event">
+              <div class="uc-mock-event-avatar av-green">MP</div>
+              <div><strong>Marie (Banque)</strong> commented on Section 4 — "Our gateway requires pacs.008, not pain.001 for credits"</div>
+              <span class="uc-mock-event-time">3h ago</span>
+            </div>
+            <div class="uc-mock-event">
+              <div class="uc-mock-event-avatar av-blue">JR</div>
+              <div><strong>Julien (CloudERP)</strong> linked ISS-024 — "Date format issue impacts this integration"</div>
+              <span class="uc-mock-event-time">yesterday</span>
+            </div>
+            <div class="uc-mock-event">
+              <div class="uc-mock-event-avatar av-ai">AI</div>
+              <div><strong>RAG search</strong> — Marie asked: "What did we agree on retry logic?" → found answer in Functional Specs v3.2, Section 8.3</div>
+              <span class="uc-mock-event-time">yesterday</span>
+            </div>
+            <div class="uc-mock-event">
+              <div class="uc-mock-event-avatar av-green">PD</div>
+              <div><strong>Philippe (Banque)</strong> approved Milestone MS-1 — "Specification signed off, proceed to configuration"</div>
+              <span class="uc-mock-event-time">last week</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="uc-workflow">
+      <div class="uc-phase">
+        <div class="uc-phase-header">
+          <div class="uc-phase-icon">📝</div>
+          <h4>Co-Authored Documentation</h4>
+        </div>
+        <div class="uc-phase-step"><strong>Both parties</strong> edit the same document tree — specs, guides, design decisions</div>
+        <div class="uc-phase-step"><strong>Full version history</strong> tracks who changed what and when — audit-ready</div>
+        <div class="uc-phase-step"><strong>RAG-searchable</strong> — "What did we agree about retry logic?" finds the answer instantly</div>
+        <div class="uc-phase-note">Six months of decisions become a searchable knowledge base, not an email graveyard</div>
+      </div>
+      <div class="uc-phase">
+        <div class="uc-phase-header">
+          <div class="uc-phase-icon pi-blue">🎫</div>
+          <h4>Cross-Company Issues</h4>
+        </div>
+        <div class="uc-phase-step"><strong>Either party creates issues</strong> — bugs, questions, change requests, blockers</div>
+        <div class="uc-phase-step"><strong>Issues link to documents</strong> — ISS-024 references the API guide, keeping context connected</div>
+        <div class="uc-phase-step"><strong>Claim / Assign / Close</strong> workflow with status tracking and audit trail</div>
+        <div class="uc-phase-note pn-blue">Issues live in the same tree as documentation — no context switching between tools</div>
+      </div>
+      <div class="uc-phase">
+        <div class="uc-phase-header">
+          <div class="uc-phase-icon pi-amber">🏁</div>
+          <h4>Milestones & Sign-offs</h4>
+        </div>
+        <div class="uc-phase-step"><strong>Milestones link</strong> to their deliverable documents and open issue count</div>
+        <div class="uc-phase-step"><strong>Both parties sign off</strong> formally before the next phase begins</div>
+        <div class="uc-phase-step"><strong>Status dashboard</strong> — completed, in progress, at risk, upcoming</div>
+        <div class="uc-phase-note pn-amber">Milestones are connected to deliverables, not floating in a separate Excel file</div>
+      </div>
+      <div class="uc-phase">
+        <div class="uc-phase-header">
+          <div class="uc-phase-icon">🔐</div>
+          <h4>Access Boundaries</h4>
+        </div>
+        <div class="uc-phase-step"><strong>Shared folders</strong> visible to both — project docs, issues, milestones</div>
+        <div class="uc-phase-step"><strong>Internal folders</strong> locked per organization — vendor cost models, bank security reviews</div>
+        <div class="uc-phase-step"><strong>Group-based ACL</strong> — sponsor view vs. developer access vs. tester access</div>
+        <div class="uc-phase-note">No Azure AD guest accounts. No SharePoint external sharing nightmares. Clean boundaries by design.</div>
+      </div>
+    </div>
+
+    <div class="uc-outcomes">
+      <div class="uc-outcome"><div class="uc-outcome-val">1</div><div class="uc-outcome-label">Single source of truth</div></div>
+      <div class="uc-outcome"><div class="uc-outcome-val">0</div><div class="uc-outcome-label">Lost email attachments</div></div>
+      <div class="uc-outcome"><div class="uc-outcome-val">AI</div><div class="uc-outcome-label">Searchable project history</div></div>
+      <div class="uc-outcome"><div class="uc-outcome-val">2×</div><div class="uc-outcome-label">Faster milestone sign-offs</div></div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- UC3: INTELLIGENT TICKETING WITH GAME THEORY                -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section class="uc" id="uc-tickets">
+  <div class="uc-inner">
+    <div class="uc-header">
+      <div class="uc-num uc-n3">03</div>
+      <div class="uc-header-text">
+        <h2>AI-Driven Support Ticketing with Game Theory Evaluation</h2>
+        <div class="uc-tagline">Tickets that guide engineers. Conversations scored by strategic outcomes.</div>
+        <p>A software supplier uses ArborSpace as its support platform. Incoming tickets are auto-classified, the knowledge base suggests solutions to engineers, workflows generate investigation steps, and every closed conversation is evaluated using game-theory scoring — measuring whether both the customer and the support engineer reached an optimal outcome.</p>
+      </div>
+    </div>
+
+    <div class="uc-scenario">
+      <div class="uc-scenario-label">Example Scenario</div>
+      <h3>NovaSoft provides L2/L3 support for its financial platform</h3>
+      <p>A customer reports a performance degradation in their batch processing module. The ticket flows through auto-classification, AI-guided diagnosis, resolution, and post-resolution evaluation. Game theory scoring ensures the resolution wasn't just fast — it was strategically optimal for both parties.</p>
+      <div class="uc-actors">
+        <div class="uc-actor"><span>🏢</span> <strong>Customer</strong> — reports issue, validates fix</div>
+        <div class="uc-actor"><span>🔧</span> <strong>Support Engineer</strong> — diagnoses & resolves</div>
+        <div class="uc-actor"><span>🤖</span> <strong>AI Engine</strong> — classifies, suggests, evaluates</div>
+        <div class="uc-actor"><span>🎯</span> <strong>Game Theory</strong> — scores conversation quality</div>
+      </div>
+    </div>
+
+    <!-- Product mock: ticket view with AI + game theory -->
+    <div class="uc-mock">
+      <div class="uc-mock-bar">
+        <span></span><span></span><span></span>
+        <span class="uc-mock-bar-title">arborspace.dev / novasoft-support / TKT-1847</span>
+      </div>
+      <div class="uc-mock-content">
+        <div class="uc-mock-sidebar">
+          <div class="uc-mock-sidebar-title">Support Tree</div>
+          <div class="mt-item"><span>📁</span> Open Tickets</div>
+          <div class="mt-item mt-indent mt-active"><span>🎫</span> TKT-1847 Batch perf <span class="mt-badge mt-badge-tkt">L2</span></div>
+          <div class="mt-item mt-indent"><span>🎫</span> TKT-1851 Login SSO <span class="mt-badge mt-badge-tkt">L1</span></div>
+          <div class="mt-item mt-indent"><span>🎫</span> TKT-1843 Report export <span class="mt-badge mt-badge-tkt">L2</span></div>
+          <div class="mt-item"><span>📁</span> Resolved This Week</div>
+          <div class="mt-item mt-indent"><span>🎫</span> TKT-1839 Memory leak <span class="mt-badge mt-badge-doc">✓</span></div>
+          <div class="mt-item mt-indent"><span>🎫</span> TKT-1836 API timeout <span class="mt-badge mt-badge-doc">✓</span></div>
+          <div class="mt-item"><span>📁</span> Knowledge Base</div>
+          <div class="mt-item mt-indent"><span>📄</span> Batch Processing Guide <span class="mt-badge mt-badge-doc">DOC</span></div>
+          <div class="mt-item mt-indent"><span>📄</span> Performance Tuning <span class="mt-badge mt-badge-doc">DOC</span></div>
+          <div class="mt-item"><span>📁</span> Workflows</div>
+          <div class="mt-item mt-indent"><span>⚙️</span> Diagnose & Report <span class="mt-badge mt-badge-wf">WFLOW</span></div>
+          <div class="mt-item mt-indent"><span>⚙️</span> Evaluate Conversation <span class="mt-badge mt-badge-wf">WFLOW</span></div>
+          <div class="mt-item"><span>📁</span> Metrics</div>
+          <div class="mt-item mt-indent"><span>📊</span> Game Theory Scores <span class="mt-badge mt-badge-ms">DASH</span></div>
+        </div>
+        <div class="uc-mock-main">
+          <h3>TKT-1847 — Batch Processing Performance Degradation</h3>
+          <div class="uc-mock-meta">
+            <span class="uc-mock-meta-tag" style="background:rgba(217,74,74,0.12);color:#f5a3a3">PRIORITY: HIGH</span>
+            <span class="uc-mock-meta-tag" style="background:rgba(74,122,217,0.12);color:var(--blue-light)">L2</span>
+            <span>Assigned → David M.</span>
+            <span>Customer: FinCorp SA</span>
+          </div>
+
+          <!-- AI suggestion -->
+          <div class="ai-card">
+            <div class="ai-card-header"><span>✦</span> AI Diagnosis Suggestion</div>
+            <p>Based on RAG search across 23 similar past tickets and the Performance Tuning guide, this issue likely relates to one of:</p>
+            <div class="ai-card-tags">
+              <span class="ai-card-tag">→ TKT-1702: Same batch module, fixed by index rebuild</span>
+              <span class="ai-card-tag">→ TKT-1589: Memory config after v4.2 upgrade</span>
+              <span class="ai-card-tag">→ Performance Tuning Guide §3.4: Batch thread pool</span>
+            </div>
+            <p style="margin-top:8px">Recommended first step: <strong style="color:var(--purple-light)">Check thread pool config — most common root cause after recent upgrades</strong></p>
+          </div>
+
+          <!-- Game theory evaluation -->
+          <div class="gt-card">
+            <div class="gt-card-header"><span>🎯</span> Game Theory Evaluation — Post-Resolution</div>
+            <p>Conversation analyzed across 4 strategic dimensions. Payoff matrix computed for both Customer and Support Engineer.</p>
+            <div class="gt-scores">
+              <span class="gt-score gt-good">Resolution speed: 4.2/5</span>
+              <span class="gt-score gt-good">Root cause found: ✓</span>
+              <span class="gt-score gt-warn">Knowledge transfer: 3.1/5</span>
+              <span class="gt-score gt-good">Cooperation index: 0.87</span>
+            </div>
+            <p style="margin-top:8px;font-size:0.7rem;color:rgba(255,255,255,0.35)">
+              Nash equilibrium analysis: Both parties reached a <strong style="color:var(--amber-light)">cooperative outcome</strong>. Customer received a fix + explanation. Engineer updated the knowledge base. Pareto-optimal: knowledge transfer score could improve with a follow-up doc.
+            </p>
+          </div>
+
+          <div class="uc-mock-feed" style="margin-top:1rem">
+            <div class="uc-mock-event">
+              <div class="uc-mock-event-avatar av-red">FC</div>
+              <div><strong>FinCorp</strong> reported: "Nightly batch taking 4x longer since your v4.3 update last Tuesday"</div>
+              <span class="uc-mock-event-time">6h ago</span>
+            </div>
+            <div class="uc-mock-event">
+              <div class="uc-mock-event-avatar av-ai">AI</div>
+              <div><strong>Auto-classify</strong> → L2, category: performance, module: batch-processing, priority: high</div>
+              <span class="uc-mock-event-time">auto</span>
+            </div>
+            <div class="uc-mock-event">
+              <div class="uc-mock-event-avatar av-blue">DM</div>
+              <div><strong>David (Support)</strong> claimed ticket. Ran "Diagnose & Report" workflow. Thread pool config confirmed as root cause.</div>
+              <span class="uc-mock-event-time">4h ago</span>
+            </div>
+            <div class="uc-mock-event">
+              <div class="uc-mock-event-avatar av-blue">DM</div>
+              <div><strong>David</strong> provided fix: thread pool increased from 4→16 per §3.4. Saved investigation as knowledge base post.</div>
+              <span class="uc-mock-event-time">2h ago</span>
+            </div>
+            <div class="uc-mock-event">
+              <div class="uc-mock-event-avatar av-red">FC</div>
+              <div><strong>FinCorp</strong> confirmed: "Batch time back to normal. Thanks for the quick turnaround."</div>
+              <span class="uc-mock-event-time">1h ago</span>
+            </div>
+            <div class="uc-mock-event">
+              <div class="uc-mock-event-avatar av-amber">GT</div>
+              <div><strong>Game Theory Engine</strong> evaluated conversation → cooperative outcome, Pareto-optimal with improvement opportunity</div>
+              <span class="uc-mock-event-time">auto</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="uc-workflow">
+      <div class="uc-phase">
+        <div class="uc-phase-header">
+          <div class="uc-phase-icon pi-purple">🤖</div>
+          <h4>AI Auto-Classification</h4>
+        </div>
+        <div class="uc-phase-step"><strong>Incoming tickets</strong> auto-classified by LLM — priority, category, module, support level</div>
+        <div class="uc-phase-step"><strong>Auto-enrichment</strong> adds doc_type, quality score, topic extraction on every ticket</div>
+        <div class="uc-phase-step"><strong>Smart routing</strong> — L1 tickets get KB articles, L2/L3 get assigned to specialists</div>
+        <div class="uc-phase-note pn-purple">Classification happens in seconds — engineers start diagnosing, not triaging</div>
+      </div>
+      <div class="uc-phase">
+        <div class="uc-phase-header">
+          <div class="uc-phase-icon">🔍</div>
+          <h4>AI-Guided Diagnosis</h4>
+        </div>
+        <div class="uc-phase-step"><strong>RAG search</strong> finds similar past tickets, knowledge base articles, and release notes</div>
+        <div class="uc-phase-step"><strong>"Diagnose & Report" workflow</strong> runs a multi-step pipeline: search → analyze → recommend</div>
+        <div class="uc-phase-step"><strong>Suggested solutions</strong> with similarity scores and source links — engineer validates, not invents</div>
+        <div class="uc-phase-note">Past resolutions become institutional memory — every closed ticket makes the next one faster</div>
+      </div>
+      <div class="uc-phase">
+        <div class="uc-phase-header">
+          <div class="uc-phase-icon pi-amber">🎯</div>
+          <h4>Game Theory Evaluation</h4>
+        </div>
+        <div class="uc-phase-step"><strong>Post-resolution workflow</strong> analyzes the full conversation as a strategic interaction</div>
+        <div class="uc-phase-step"><strong>Payoff matrix</strong> computed: resolution speed, root cause depth, knowledge transfer, cooperation level</div>
+        <div class="uc-phase-step"><strong>Nash equilibrium analysis</strong> — did both parties reach an optimal outcome, or was value left on the table?</div>
+        <div class="uc-phase-note pn-amber">Not just "was it fast?" — "was the interaction strategically optimal for both sides?"</div>
+      </div>
+      <div class="uc-phase">
+        <div class="uc-phase-header">
+          <div class="uc-phase-icon pi-blue">📈</div>
+          <h4>Continuous Improvement</h4>
+        </div>
+        <div class="uc-phase-step"><strong>Aggregate scores</strong> across engineers, customers, issue types — identify systemic patterns</div>
+        <div class="uc-phase-step"><strong>Knowledge gaps detected</strong> — topics where engineers consistently score low on root cause depth</div>
+        <div class="uc-phase-step"><strong>Resolution insights saved as posts</strong> — the knowledge base grows with every ticket closed</div>
+        <div class="uc-phase-note pn-blue">Game theory turns support from a cost center into a measurable strategic function</div>
+      </div>
+    </div>
+
+    <div class="uc-outcomes">
+      <div class="uc-outcome"><div class="uc-outcome-val">↓ 40%</div><div class="uc-outcome-label">Time to resolution</div></div>
+      <div class="uc-outcome"><div class="uc-outcome-val">🎯</div><div class="uc-outcome-label">Every conversation scored</div></div>
+      <div class="uc-outcome"><div class="uc-outcome-val">AI ✦</div><div class="uc-outcome-label">Auto-classified & guided</div></div>
+      <div class="uc-outcome"><div class="uc-outcome-val">∞</div><div class="uc-outcome-label">Self-improving knowledge</div></div>
+    </div>
+  </div>
+</section>
+
+
+<!-- CTA -->
+<section class="cta">
+  <h2>Which forest will you grow?</h2>
+  <p>Deploy in minutes. Free and open source. Your data, your AI, your competitive edge.</p>
+</section>
+
+<footer>
+  <div class="footer-inner" style="grid-template-columns:2fr 1fr 1fr">
+    <div class="footer-brand">
+      <a href="index.html" class="logo">
+        <svg viewBox="0 0 32 32" fill="none" width="32" height="32"><rect width="32" height="32" rx="8" fill="#0f2419"/><path d="M16 6 L16 18 M12 10 L16 14 M20 10 L16 14 M10 14 L16 20 M22 14 L16 20 M8 18 L16 26 M24 18 L16 26" stroke="#5cb87a" stroke-width="2" stroke-linecap="round"/></svg>
+        <span class="logo-text">ArborSpace</span>
+      </a>
+      <p>Structured knowledge for intelligent AI retrieval. Built in the French Alps. Open source forever.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Product</h4>
+      <a href="index.html">Home</a>
+      <a href="features.html">Features</a>
+      <a href="usecases.html">Use Cases</a>
+      <a href="services.html">Services</a>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <a href="/cdn-cgi/l/email-protection#dbb1bebab5abb3b2b7b9a9bea2a8a8be9bbcb6bab2b7f5b8b4b6"><span class="__cf_email__" data-cfemail="38525d5956485051545a4a5d414b4b5d785f55595154165b5755">[email&#160;protected]</span></a>
+      <a href="https://github.com/arborspace" target="_blank">GitHub</a>
+      <a href="https://linkedin.com" target="_blank">LinkedIn</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 ArborSpace. Open source under MIT license.</span>
+    <div style="display:flex;gap:1.5rem"><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Security</a></div>
+  </div>
+</footer>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  window.addEventListener('scroll',()=>{document.getElementById('nav').classList.toggle('scrolled',window.scrollY>10)});
+  const obs=new IntersectionObserver(e=>{e.forEach(el=>{if(el.isIntersecting){el.target.style.opacity='1';el.target.style.transform='translateY(0)'}})},{threshold:0.06});
+  document.querySelectorAll('.uc-h

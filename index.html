@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ArborSpace — Structured Knowledge for Intelligent AI Retrieval</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --forest: #0f2419;
+    --forest-mid: #1a3a2a;
+    --canopy: #3d8b63;
+    --leaf: #5cb87a;
+    --leaf-light: #a8e6c3;
+    --amber: #e8a838;
+    --amber-light: #f5d590;
+    --cream: #faf8f4;
+    --cream-dark: #f0ece4;
+    --bark: #8b7355;
+    --text-dark: #1a1a18;
+    --text-mid: #4a4a45;
+    --text-light: #7a7a72;
+    --white: #ffffff;
+    --blue: #4a7ad9;
+    --purple: #9b6dd7;
+    --purple-light: #d4a8f5;
+    --radius: 12px;
+    --radius-lg: 20px;
+    --shadow-sm: 0 2px 8px rgba(15,36,25,0.06);
+    --shadow-md: 0 8px 32px rgba(15,36,25,0.10);
+    --shadow-lg: 0 16px 64px rgba(15,36,25,0.14);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{font-family:'Outfit',sans-serif;background:var(--cream);color:var(--text-dark);line-height:1.6;overflow-x:hidden}
+
+  /* NAV */
+  nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(250,248,244,0.88);backdrop-filter:blur(20px);border-bottom:1px solid rgba(15,36,25,0.06)}
+  nav.scrolled{box-shadow:var(--shadow-sm)}
+  .nav-inner{max-width:1200px;margin:0 auto;padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:72px}
+  .logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--forest)}
+  .logo svg{width:32px;height:32px}
+  .logo-text{font-family:'DM Serif Display',serif;font-size:1.35rem;letter-spacing:-0.02em}
+  .nav-links{display:flex;align-items:center;gap:2rem}
+  .nav-links a{text-decoration:none;color:var(--text-mid);font-weight:500;font-size:0.95rem;transition:color 0.2s;position:relative}
+  .nav-links a:hover{color:var(--forest)}
+  .nav-links a.active{color:var(--forest);font-weight:600}
+  .nav-links a.active::after{content:'';position:absolute;bottom:-4px;left:0;right:0;height:2px;background:var(--canopy);border-radius:1px}
+  .nav-cta{background:var(--forest)!important;color:var(--white)!important;padding:10px 22px!important;border-radius:8px;font-weight:600!important;transition:all 0.25s!important}
+  .nav-cta:hover{background:var(--forest-mid)!important;transform:translateY(-1px)}
+  .nav-cta::after{display:none!important}
+
+  /* HERO */
+  .hero{padding:150px 2rem 80px;text-align:center;position:relative}
+  .hero::before{content:'';position:absolute;top:-200px;left:50%;transform:translateX(-50%);width:900px;height:900px;background:radial-gradient(circle,rgba(61,139,99,0.07) 0%,transparent 70%);pointer-events:none}
+  .hero-badge{display:inline-flex;align-items:center;gap:8px;background:var(--white);border:1px solid rgba(61,139,99,0.2);border-radius:100px;padding:8px 20px 8px 12px;font-size:0.85rem;color:var(--canopy);font-weight:500;margin-bottom:2rem;animation:fadeInDown 0.8s ease}
+  .hero-badge-dot{width:8px;height:8px;background:var(--leaf);border-radius:50%;animation:pulse 2s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+  .hero h1{font-family:'DM Serif Display',serif;font-size:clamp(2.6rem,5.5vw,4.2rem);line-height:1.1;letter-spacing:-0.03em;color:var(--forest);max-width:850px;margin:0 auto 1.5rem;animation:fadeInUp 0.8s ease 0.1s both}
+  .hero h1 em{font-style:italic;color:var(--canopy)}
+  .hero-sub{font-size:1.2rem;color:var(--text-mid);max-width:600px;margin:0 auto 1rem;line-height:1.7;font-weight:300;animation:fadeInUp 0.8s ease 0.2s both}
+  .hero-tagline{font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--canopy);font-style:italic;margin-bottom:2.5rem;animation:fadeInUp 0.8s ease 0.25s both}
+  .hero-actions{display:flex;align-items:center;justify-content:center;gap:1rem;animation:fadeInUp 0.8s ease 0.3s both;flex-wrap:wrap}
+  @keyframes fadeInUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes fadeInDown{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+  .btn-primary{background:var(--forest);color:var(--white);padding:14px 32px;border-radius:10px;font-weight:600;font-size:1rem;text-decoration:none;transition:all 0.25s;display:inline-flex;align-items:center;gap:8px;box-shadow:0 4px 16px rgba(15,36,25,0.2)}
+  .btn-primary:hover{background:var(--forest-mid);transform:translateY(-2px);box-shadow:0 8px 24px rgba(15,36,25,0.25)}
+  .btn-secondary{background:var(--white);color:var(--forest);padding:14px 32px;border-radius:10px;font-weight:600;font-size:1rem;text-decoration:none;transition:all 0.25s;border:1.5px solid rgba(15,36,25,0.15)}
+  .btn-secondary:hover{border-color:var(--canopy);transform:translateY(-2px)}
+
+  /* PRODUCT SHOWCASE */
+  .showcase{padding:0 2rem 5rem;animation:fadeInUp 1s ease 0.5s both}
+  .showcase-inner{max-width:1100px;margin:0 auto}
+  .showcase-tabs{display:flex;justify-content:center;gap:0.5rem;margin-bottom:1.5rem;flex-wrap:wrap}
+  .showcase-tab{padding:8px 18px;border-radius:8px;font-size:0.85rem;font-weight:500;color:var(--text-light);cursor:pointer;transition:all 0.25s;border:1.5px solid transparent;background:var(--white)}
+  .showcase-tab:hover{color:var(--forest);border-color:rgba(15,36,25,0.1)}
+  .showcase-tab.active{background:var(--forest);color:var(--white);border-color:var(--forest)}
+  .showcase-frame{background:var(--forest);border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-lg);border:1px solid rgba(61,139,99,0.15)}
+  .showcase-bar{display:flex;align-items:center;gap:8px;padding:14px 18px;background:rgba(255,255,255,0.04);border-bottom:1px solid rgba(255,255,255,0.06)}
+  .showcase-bar span{width:12px;height:12px;border-radius:50%}
+  .showcase-bar span:nth-child(1){background:#ff5f57}
+  .showcase-bar span:nth-child(2){background:#ffbd2e}
+  .showcase-bar span:nth-child(3){background:#28c840}
+  .showcase-bar-url{margin-left:16px;font-size:0.72rem;color:rgba(255,255,255,0.3);font-family:'JetBrains Mono',monospace}
+  .showcase-screen{position:relative;overflow:hidden;min-height:400px}
+  .showcase-screen img{width:100%;display:block;transition:opacity 0.5s ease}
+  .showcase-screen img.hidden{position:absolute;top:0;left:0;opacity:0;pointer-events:none}
+
+  /* SECTION UTILS */
+  .section-label{font-size:0.8rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--canopy);font-weight:600;margin-bottom:1rem}
+  .section-title{font-family:'DM Serif Display',serif;font-size:clamp(2rem,4vw,2.8rem);color:var(--forest);letter-spacing:-0.02em;margin-bottom:1rem}
+  .section-desc{font-size:1.05rem;color:var(--text-mid);max-width:600px;font-weight:300;margin-bottom:3.5rem;line-height:1.7}
+
+  /* FOUR PILLARS */
+  .pillars{padding:6rem 2rem;background:var(--white)}
+  .pillars-inner{max-width:1100px;margin:0 auto}
+  .pillars-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.5rem}
+  .pillar{background:var(--cream);border:1px solid rgba(15,36,25,0.05);border-radius:var(--radius-lg);padding:2.5rem;transition:all 0.35s;position:relative;overflow:hidden}
+  .pillar:hover{transform:translateY(-4px);box-shadow:var(--shadow-md);border-color:rgba(61,139,99,0.15)}
+  .pillar::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;opacity:0;transition:opacity 0.35s}
+  .pillar:hover::before{opacity:1}
+  .pillar:nth-child(1)::before{background:linear-gradient(90deg,var(--canopy),var(--leaf))}
+  .pillar:nth-child(2)::before{background:linear-gradient(90deg,var(--blue),#7eb8f0)}
+  .pillar:nth-child(3)::before{background:linear-gradient(90deg,var(--purple),var(--purple-light))}
+  .pillar:nth-child(4)::before{background:linear-gradient(90deg,var(--amber),var(--amber-light))}
+  .pillar-icon{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin-bottom:1.5rem}
+  .pi-1{background:rgba(61,139,99,0.1)}
+  .pi-2{background:rgba(74,122,217,0.1)}
+  .pi-3{background:rgba(155,109,215,0.1)}
+  .pi-4{background:rgba(232,168,56,0.1)}
+  .pillar h3{font-family:'DM Serif Display',serif;font-size:1.3rem;color:var(--forest);margin-bottom:0.75rem}
+  .pillar p{color:var(--text-mid);font-size:0.95rem;line-height:1.7;font-weight:300}
+  .pillar-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:1.2rem}
+  .pillar-tag{padding:4px 10px;background:var(--white);border:1px solid rgba(0,0,0,0.06);border-radius:6px;font-size:0.73rem;color:var(--text-light);font-weight:500}
+
+  /* ANATOMY */
+  .anatomy{padding:6rem 2rem}
+  .anatomy-inner{max-width:1100px;margin:0 auto}
+  .anatomy-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+  .anatomy-card{background:var(--white);border:1px solid rgba(15,36,25,0.05);border-radius:var(--radius);padding:1.5rem;transition:all 0.3s}
+  .anatomy-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-sm)}
+  .anatomy-card-icon{font-size:1.4rem;margin-bottom:0.8rem}
+  .anatomy-card h4{font-family:'DM Serif Display',serif;font-size:1rem;color:var(--forest);margin-bottom:0.4rem}
+  .anatomy-card p{font-size:0.82rem;color:var(--text-mid);line-height:1.6;font-weight:300}
+
+  /* ARCHITECTURE */
+  .arch{padding:6rem 2rem;background:var(--white)}
+  .arch-inner{max-width:1100px;margin:0 auto}
+  .arch-visual{background:var(--forest);border-radius:var(--radius-lg);padding:3rem;display:grid;grid-template-columns:repeat(3,1fr);gap:2rem;color:var(--white);margin-top:2rem}
+  .arch-node{text-align:center;padding:1.5rem;border-radius:14px;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.03);transition:all 0.3s}
+  .arch-node:hover{background:rgba(255,255,255,0.06);transform:translateY(-3px)}
+  .arch-node-icon{font-size:2rem;margin-bottom:0.8rem}
+  .arch-node h4{font-size:1.1rem;font-family:'DM Serif Display',serif;margin-bottom:0.3rem}
+  .arch-node p{font-size:0.78rem;color:rgba(255,255,255,0.5);line-height:1.6}
+  .arch-node-detail{font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:rgba(255,255,255,0.3);margin-top:0.6rem;padding:6px 10px;background:rgba(255,255,255,0.04);border-radius:6px;display:inline-block}
+  .arch-connectors{grid-column:1/-1;display:flex;justify-content:center;align-items:center;gap:1rem;padding:0.5rem 0;color:rgba(255,255,255,0.2);font-size:0.75rem;font-family:'JetBrains Mono',monospace}
+  .arch-connectors .arrow{color:var(--leaf);font-weight:700}
+  .arch-badge{grid-column:1/-1;text-align:center;padding:1rem;background:rgba(92,184,122,0.08);border:1px solid rgba(92,184,122,0.15);border-radius:10px;font-size:0.82rem;color:var(--leaf-light);font-weight:500}
+
+  /* VS COPILOT */
+  .vs{padding:6rem 2rem}
+  .vs-inner{max-width:900px;margin:0 auto}
+  .vs-table{width:100%;border-collapse:separate;border-spacing:0;text-align:left;border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-sm)}
+  .vs-table thead th{padding:16px 20px;font-size:0.75rem;text-transform:uppercase;letter-spacing:0.08em;font-weight:600;border-bottom:2px solid var(--cream-dark)}
+  .vs-table thead th:first-child{background:var(--white);color:var(--text-light)}
+  .vs-table thead th:nth-child(2){background:rgba(74,122,217,0.04);color:var(--blue)}
+  .vs-table thead th:nth-child(3){background:rgba(61,139,99,0.04);color:var(--canopy)}
+  .vs-table tbody td{padding:14px 20px;font-size:0.88rem;color:var(--text-mid);border-bottom:1px solid var(--cream-dark);background:var(--white)}
+  .vs-table tbody td:nth-child(3){background:rgba(61,139,99,0.02);color:var(--forest);font-weight:500}
+  .vs-table tbody tr:last-child td{border-bottom:none}
+  .vs-win{color:var(--canopy);font-weight:600}
+  .vs-lose{color:var(--text-light);opacity:0.5}
+  .vs-partial{color:var(--amber)}
+  .vs-score{text-align:center;margin-top:1.5rem;display:flex;justify-content:center;gap:3rem}
+  .vs-score-item{text-align:center}
+  .vs-score-val{font-family:'JetBrains Mono',monospace;font-size:1.5rem;font-weight:700}
+  .vs-score-label{font-size:0.78rem;color:var(--text-light)}
+
+  /* CTA */
+  .cta{padding:6rem 2rem;text-align:center;background:var(--forest);position:relative;overflow:hidden}
+  .cta::before{content:'';position:absolute;top:-200px;left:50%;transform:translateX(-50%);width:800px;height:800px;background:radial-gradient(circle,rgba(92,184,122,0.1) 0%,transparent 70%);pointer-events:none}
+  .cta h2{font-family:'DM Serif Display',serif;font-size:clamp(2rem,4vw,2.8rem);color:var(--white);margin-bottom:1rem}
+  .cta p{color:rgba(255,255,255,0.6);font-size:1.1rem;margin-bottom:2.5rem;font-weight:300;max-width:500px;margin-left:auto;margin-right:auto}
+  .cta-actions{display:flex;justify-content:center;gap:1rem;flex-wrap:wrap}
+  .btn-cta-w{background:var(--white);color:var(--forest);padding:14px 32px;border-radius:10px;font-weight:600;font-size:1rem;text-decoration:none;transition:all 0.25s}
+  .btn-cta-w:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.2)}
+  .btn-cta-o{background:transparent;color:var(--white);padding:14px 32px;border-radius:10px;font-weight:600;font-size:1rem;text-decoration:none;transition:all 0.25s;border:1.5px solid rgba(255,255,255,0.25)}
+  .btn-cta-o:hover{border-color:rgba(255,255,255,0.5)}
+
+  /* FOOTER */
+  footer{background:var(--forest);color:rgba(255,255,255,0.6);padding:3rem 2rem 2rem;border-top:1px solid rgba(255,255,255,0.06)}
+  .footer-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr;gap:3rem;margin-bottom:2rem}
+  .footer-brand .logo-text{color:var(--white)}
+  .footer-brand p{margin-top:1rem;font-size:0.85rem;line-height:1.7;max-width:280px}
+  .footer-col h4{color:var(--white);font-weight:600;font-size:0.82rem;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:1rem}
+  .footer-col a{display:block;color:rgba(255,255,255,0.5);text-decoration:none;font-size:0.88rem;padding:3px 0;transition:color 0.2s}
+  .footer-col a:hover{color:var(--leaf-light)}
+  .footer-bottom{max-width:1100px;margin:0 auto;border-top:1px solid rgba(255,255,255,0.08);padding-top:1.5rem;display:flex;justify-content:space-between;font-size:0.78rem}
+  .footer-bottom a{color:rgba(255,255,255,0.4);text-decoration:none}
+
+  @media(max-width:768px){
+    .pillars-grid{grid-template-columns:1fr}
+    .anatomy-grid{grid-template-columns:1fr}
+    .arch-visual{grid-template-columns:1fr}
+    .footer-inner{grid-template-columns:1fr 1fr}
+    .showcase-tabs{gap:0.3rem}
+    .showcase-tab{padding:6px 12px;font-size:0.78rem}
+    .vs-table{font-size:0.78rem}
+    .vs-table td,.vs-table th{padding:10px 12px}
+    .nav-links a:not(.nav-cta){display:none}
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="nav-inner">
+    <a href="#" class="logo">
+      <svg viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="8" fill="#0f2419"/><path d="M16 6 L16 18 M12 10 L16 14 M20 10 L16 14 M10 14 L16 20 M22 14 L16 20 M8 18 L16 26 M24 18 L16 26" stroke="#5cb87a" stroke-width="2" stroke-linecap="round"/></svg>
+      <span class="logo-text">ArborSpace</span>
+    </a>
+    <div class="nav-links">
+      <a href="#" class="active">Home</a>
+      <a href="features.html">Features</a>
+      <a href="usecases.html">Use Cases</a>
+      <a href="services.html">Services</a>
+      <a href="mailto:jeanphilbreysse@gmail.com" class="nav-cta">Contact Us</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">
+    <span class="hero-badge-dot"></span>
+    Open Source · On-Premise · AI-Powered
+  </div>
+  <h1>Structured Knowledge for <em>Intelligent AI Retrieval</em></h1>
+  <p class="hero-sub">
+    A knowledge platform that combines a living wiki with semantic search and AI-powered retrieval. Not just file storage — active knowledge management.
+  </p>
+  <div class="hero-tagline">
+    "Copilot can search your documents. ArborSpace understands them."
+  </div>
+</section>
+
+<!-- PRODUCT SHOWCASE -->
+<section class="showcase">
+  <div class="showcase-inner">
+    <div class="showcase-tabs">
+      <div class="showcase-tab active" onclick="showScreen(0)">📁 Folder Navigation</div>
+      <div class="showcase-tab" onclick="showScreen(1)">🕸️ Knowledge Graph</div>
+      <div class="showcase-tab" onclick="showScreen(2)">💬 AI Chat</div>
+      <div class="showcase-tab" onclick="showScreen(3)">⚙️ Workflows</div>
+      <div class="showcase-tab" onclick="showScreen(4)">📄 AI Insights</div>
+    </div>
+    <div class="showcase-frame">
+      <div class="showcase-bar">
+        <span></span><span></span><span></span>
+        <span class="showcase-bar-url">arborspace.dev</span>
+      </div>
+      <div class="showcase-screen" id="showcase-screen">
+        <img src="images/folder-view.png" alt="ArborSpace Folder Navigation" data-idx="0">
+        <img src="images/graph-view.png" alt="ArborSpace Knowledge Graph" class="hidden" data-idx="1">
+        <img src="images/chat-view.png" alt="ArborSpace AI Chat" class="hidden" data-idx="2">
+        <img src="images/workflow-view.png" alt="ArborSpace Workflows" class="hidden" data-idx="3">
+        <img src="images/summary-view.png" alt="ArborSpace AI Insights" class="hidden" data-idx="4">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOUR PILLARS -->
+<section class="pillars" id="pillars">
+  <div class="pillars-inner">
+    <div class="section-label">Core Capabilities</div>
+    <h2 class="section-title">Four pillars of intelligent knowledge</h2>
+    <p class="section-desc">Every feature designed so humans navigate naturally and AI retrieves precisely.</p>
+
+    <div class="pillars-grid">
+      <div class="pillar">
+        <div class="pillar-icon pi-1">📚</div>
+        <h3>Living Knowledge Base</h3>
+        <p>Create, organize, and evolve knowledge in a structured wiki. Hierarchical folders, typed documents (DOC, BUG, ROA), categories, tags, and virtual folders give every post six dimensions — serving both human navigation and machine intelligence.</p>
+        <div class="pillar-tags">
+          <span class="pillar-tag">Hierarchical folders</span>
+          <span class="pillar-tag">Typed content</span>
+          <span class="pillar-tag">Categories & tags</span>
+          <span class="pillar-tag">Version history</span>
+        </div>
+      </div>
+
+      <div class="pillar">
+        <div class="pillar-icon pi-2">🔍</div>
+        <h3>Semantic Search</h3>
+        <p>Find what you mean, not just what you typed. Posts are automatically split into chunks and embedded as 768-dimension vectors in pgvector. Hybrid search combines semantic similarity with full-text matching for precision results in under 100ms.</p>
+        <div class="pillar-tags">
+          <span class="pillar-tag">Vector embeddings</span>
+          <span class="pillar-tag">pgvector</span>
+          <span class="pillar-tag">Hybrid search</span>
+          <span class="pillar-tag">Cosine similarity</span>
+        </div>
+      </div>
+
+      <div class="pillar">
+        <div class="pillar-icon pi-3">🤖</div>
+        <h3>AI-Powered RAG Chat</h3>
+        <p>Ask questions in natural language. ArborSpace retrieves relevant chunks, injects them into editable prompt templates, and synthesizes answers with source citations. Consultants own the prompts — no developer needed to edit or create templates.</p>
+        <div class="pillar-tags">
+          <span class="pillar-tag">RAG pipeline</span>
+          <span class="pillar-tag">Prompt templates</span>
+          <span class="pillar-tag">Source citations</span>
+          <span class="pillar-tag">SSE streaming</span>
+        </div>
+      </div>
+
+      <div class="pillar">
+        <div class="pillar-icon pi-4">🏷️</div>
+        <h3>Auto-Classification</h3>
+        <p>AI classifies content into your domain taxonomy automatically. Every chunk inherits the post's category, tags, and permissions — search is filtered, results are access-controlled, and your taxonomy enriches relevance across the entire knowledge base.</p>
+        <div class="pillar-tags">
+          <span class="pillar-tag">Domain taxonomy</span>
+          <span class="pillar-tag">AI classification</span>
+          <span class="pillar-tag">RBAC enforcement</span>
+          <span class="pillar-tag">Inherited permissions</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SIX DIMENSIONS -->
+<section class="anatomy">
+  <div class="anatomy-inner">
+    <div class="section-label">Anatomy of a Post</div>
+    <h2 class="section-title">One object — six dimensions</h2>
+    <p class="section-desc">Every post serves both human navigation and machine intelligence. Searchable, classifiable, protectable.</p>
+
+    <div class="anatomy-grid">
+      <div class="anatomy-card">
+        <div class="anatomy-card-icon">🗂️</div>
+        <h4>Category = Taxonomy</h4>
+        <p>Hierarchical classification drives RAG search precision. Queries are filtered by technology branch for relevant results.</p>
+      </div>
+      <div class="anatomy-card">
+        <div class="anatomy-card-icon">🏷️</div>
+        <h4>Tags = Cross-cutting Labels</h4>
+        <p>Flat labels that cut across categories. A post can be tagged CAPEX + Morocco + due-diligence. Powers faceted search.</p>
+      </div>
+      <div class="anatomy-card">
+        <div class="anatomy-card-icon">📁</div>
+        <h4>Virtual Folder = Navigation</h4>
+        <p>Organizes posts for human browsing like a file system. A post can appear in multiple folders without duplication.</p>
+      </div>
+      <div class="anatomy-card">
+        <div class="anatomy-card-icon">🔐</div>
+        <h4>Groups = Who Can See It</h4>
+        <p>Personal, public, or group-restricted. NDA-sensitive reports locked to specific teams. RBAC enforced at every level.</p>
+      </div>
+      <div class="anatomy-card">
+        <div class="anatomy-card-icon">📊</div>
+        <h4>Status = Lifecycle</h4>
+        <p>Assigned / Closed tracks review workflow. Claim, assign, reopen. Full audit trail with complete version history.</p>
+      </div>
+      <div class="anatomy-card">
+        <div class="anatomy-card-icon">📎</div>
+        <h4>Source = Provenance</h4>
+        <p>Tracks origin: manual creation, PDF import, SharePoint sync, workflow output. Know where every piece of knowledge came from.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ARCHITECTURE -->
+<section class="arch">
+  <div class="arch-inner">
+    <div class="section-label">Architecture</div>
+    <h2 class="section-title">Three components. Zero external dependencies.</h2>
+    <p class="section-desc">SvelteKit is the hub — it talks to PostgreSQL for data and Ollama for AI. They don't talk to each other. All on-premise via Docker Compose.</p>
+
+    <div class="arch-visual">
+      <div class="arch-node">
+        <div class="arch-node-icon">🐘</div>
+        <h4>PostgreSQL 16</h4>
+        <p>Posts, users, chunks, categories. pgvector for 768-dim embeddings. tsvector for full-text search. Cosine similarity + ts_rank.</p>
+        <div class="arch-node-detail">Port 5432 · Persistent volume</div>
+      </div>
+      <div class="arch-node">
+        <div class="arch-node-icon">⚡</div>
+        <h4>SvelteKit</h4>
+        <p>Wiki editor & content management. Hybrid search UI. RAG chat with SSE streaming. Auth, RBAC, admin panel. Document ingestion pipeline.</p>
+        <div class="arch-node-detail">Node.js · Port 3000</div>
+      </div>
+      <div class="arch-node">
+        <div class="arch-node-icon">🧠</div>
+        <h4>Ollama</h4>
+        <p>Mistral Nemo for generation & review. Nomic embedding model for vectorization. Streaming token generation. 100% local — no external API.</p>
+        <div class="arch-node-detail">Port 11434 · ~4 GB models</div>
+      </div>
+      <div class="arch-connectors">
+        PostgreSQL <span class="arrow">←SQL/pgvector→</span> SvelteKit <span class="arrow">←HTTP→</span> Ollama
+      </div>
+      <div class="arch-badge">
+        🔒 On-premise — all three services on one server via Docker Compose. No external API calls. Data never leaves the network.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VS COPILOT -->
+<section class="vs">
+  <div class="vs-inner">
+    <div class="section-label">Honest Comparison</div>
+    <h2 class="section-title">Microsoft Copilot vs. ArborSpace</h2>
+    <p class="section-desc">Different strengths. Choose based on what matters most for your use case.</p>
+
+    <table class="vs-table">
+      <thead>
+        <tr><th>Dimension</th><th>Microsoft Copilot</th><th>ArborSpace</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>AI Model Power</td><td><span class="vs-win">GPT-4o — best-in-class</span></td><td><span class="vs-partial">Mistral NeMo — capable, improving fast</span></td></tr>
+        <tr><td>Data Sovereignty</td><td><span class="vs-lose">Cloud only, Azure tenant</span></td><td><span class="vs-win">100% on-premise, data never leaves</span></td></tr>
+        <tr><td>NDA Compliance</td><td><span class="vs-lose">Many lenders prohibit cloud LLM</span></td><td><span class="vs-win">Air-gapped if needed, full compliance</span></td></tr>
+        <tr><td>Domain Taxonomy</td><td><span class="vs-lose">Generic — no domain structure</span></td><td><span class="vs-win">Custom hierarchy per client</span></td></tr>
+        <tr><td>Chunking Control</td><td><span class="vs-lose">Black box Semantic Index</span></td><td><span class="vs-win">Strategy per doc type, debug & tune</span></td></tr>
+        <tr><td>Prompt Templates</td><td><span class="vs-lose">Copilot Studio — requires devs</span></td><td><span class="vs-win">Wiki posts — editable by consultants</span></td></tr>
+        <tr><td>Vendor Lock-in</td><td><span class="vs-lose">Microsoft ecosystem</span></td><td><span class="vs-win">Open source, swap LLM in config</span></td></tr>
+        <tr><td>Cost (50 users)</td><td>~$18,000/year + Azure compute</td><td><strong>Server cost only, no per-user fees</strong></td></tr>
+      </tbody>
+    </table>
+
+    <div class="vs-score">
+      <div class="vs-score-item">
+        <div class="vs-score-val" style="color:var(--blue)">2✓ 2~ 4✗</div>
+        <div class="vs-score-label">Microsoft Copilot</div>
+      </div>
+      <div class="vs-score-item">
+        <div class="vs-score-val" style="color:var(--canopy)">6✓ 2~ 0✗</div>
+        <div class="vs-score-label">ArborSpace</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+  <h2>Copilot makes your team productive.<br>ArborSpace makes your knowledge sovereign.</h2>
+  <p>Deploy in a day. Free and open source. Your data never leaves your network.</p>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner" style="grid-template-columns:2fr 1fr 1fr">
+    <div class="footer-brand">
+      <a href="index.html" class="logo">
+        <svg viewBox="0 0 32 32" fill="none" width="32" height="32"><rect width="32" height="32" rx="8" fill="#0f2419"/><path d="M16 6 L16 18 M12 10 L16 14 M20 10 L16 14 M10 14 L16 20 M22 14 L16 20 M8 18 L16 26 M24 18 L16 26" stroke="#5cb87a" stroke-width="2" stroke-linecap="round"/></svg>
+        <span class="logo-text">ArborSpace</span>
+      </a>
+      <p>Structured knowledge for intelligent AI retrieval. Built in the French Alps. Open source forever.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Product</h4>
+      <a href="index.html">Home</a>
+      <a href="features.html">Features</a>
+      <a href="usecases.html">Use Cases</a>
+      <a href="services.html">Services</a>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <a href="/cdn-cgi/l/email-protection#8ee4ebefe0fee6e7e2ecfcebf7fdfdebcee9e3efe7e2a0ede1e3"><span class="__cf_email__" data-cfemail="076d626669776f6e6b6575627e74746247606a666e6b2964686a">[email&#160;protected]</span></a>
+      <a href="https://github.com/arborspace" target="_blank">GitHub</a>
+      <a href="https://linkedin.com" target="_blank">LinkedIn</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 ArborSpace. Open source under MIT license.</span>
+    <div style="display:flex;gap:1.5rem"><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Security</a></div>
+  </div>
+</footer>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  // Nav scroll
+  window.addEventListener('scroll',()=>{document.getElementById('nav').classList.toggle('scrolled',window.scrollY>10)});
+
+  // Showcase tabs
+  function showScreen(idx){
+    document.querySelectorAll('.showcase-tab').forEach((t,i)=>t.classList.toggle('active',i===idx));
+    document.querySelectorAll('.showcase-screen img').forEach((img,i)=>{img.classList.toggle('hidden',i!==idx)});
+  }
+
+  // Scroll animations
+  const obs=new IntersectionObserver(e=>{e.forEach(el=>{if(el.isIntersecting){el.target.style.opacity='1';el.target.style.transform='translateY(0)'}})},{threshold:0.08});
+  docume

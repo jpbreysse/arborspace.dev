@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ArborSpace — Services</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{--forest:#0f2419;--forest-mid:#1a3a2a;--canopy:#3d8b63;--leaf:#5cb87a;--leaf-light:#a8e6c3;--amber:#e8a838;--amber-light:#f5d590;--cream:#faf8f4;--cream-dark:#f0ece4;--bark:#8b7355;--text-dark:#1a1a18;--text-mid:#4a4a45;--text-light:#7a7a72;--white:#ffffff;--blue:#4a7ad9;--blue-light:#a3c8f0;--purple:#9b6dd7;--purple-light:#d4a8f5;--radius:12px;--radius-lg:20px;--shadow-sm:0 2px 8px rgba(15,36,25,0.06);--shadow-md:0 8px 32px rgba(15,36,25,0.10);--shadow-lg:0 16px 64px rgba(15,36,25,0.14)}
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{font-family:'Outfit',sans-serif;background:var(--cream);color:var(--text-dark);line-height:1.6;overflow-x:hidden}
+
+  /* NAV */
+  nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(250,248,244,0.88);backdrop-filter:blur(20px);border-bottom:1px solid rgba(15,36,25,0.06)}
+  nav.scrolled{box-shadow:var(--shadow-sm)}
+  .nav-inner{max-width:1200px;margin:0 auto;padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:72px}
+  .logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--forest)}
+  .logo svg{width:32px;height:32px}
+  .logo-text{font-family:'DM Serif Display',serif;font-size:1.35rem;letter-spacing:-0.02em}
+  .nav-links{display:flex;align-items:center;gap:2rem}
+  .nav-links a{text-decoration:none;color:var(--text-mid);font-weight:500;font-size:0.95rem;transition:color 0.2s;position:relative}
+  .nav-links a:hover{color:var(--forest)}
+  .nav-links a.active{color:var(--forest);font-weight:600}
+  .nav-links a.active::after{content:'';position:absolute;bottom:-4px;left:0;right:0;height:2px;background:var(--canopy);border-radius:1px}
+  .nav-cta{background:var(--forest)!important;color:var(--white)!important;padding:10px 22px!important;border-radius:8px;font-weight:600!important;transition:all 0.25s!important}
+  .nav-cta:hover{background:var(--forest-mid)!important;transform:translateY(-1px)}
+  .nav-cta::after{display:none!important}
+
+  /* HEADER */
+  .page-header{padding:150px 2rem 60px;text-align:center;position:relative}
+  .page-header::before{content:'';position:absolute;top:-150px;left:50%;transform:translateX(-50%);width:800px;height:800px;background:radial-gradient(circle,rgba(61,139,99,0.06) 0%,transparent 70%);pointer-events:none}
+  .section-label{font-size:0.8rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--canopy);font-weight:600;margin-bottom:1rem}
+  .page-header h1{font-family:'DM Serif Display',serif;font-size:clamp(2.5rem,5vw,3.8rem);color:var(--forest);letter-spacing:-0.03em;margin-bottom:1.2rem;max-width:750px;margin-left:auto;margin-right:auto}
+  .page-header h1 em{font-style:italic;color:var(--canopy)}
+  .page-header p{font-size:1.15rem;color:var(--text-mid);max-width:640px;margin:0 auto;font-weight:300;line-height:1.7}
+
+  /* SECTION */
+  .sect{padding:5rem 2rem;scroll-margin-top:80px}
+  .sect:nth-child(even){background:var(--white)}
+  .sect-inner{max-width:1100px;margin:0 auto}
+  .section-title{font-family:'DM Serif Display',serif;font-size:clamp(1.8rem,3.5vw,2.4rem);color:var(--forest);letter-spacing:-0.02em;margin-bottom:0.6rem}
+  .section-desc{font-size:1.02rem;color:var(--text-mid);max-width:620px;font-weight:300;margin-bottom:3rem;line-height:1.7}
+
+  /* ROADMAP TIMELINE */
+  .roadmap{position:relative;padding-left:3rem}
+  .roadmap::before{content:'';position:absolute;left:19px;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--canopy),var(--leaf),var(--amber),var(--blue),var(--purple),var(--canopy))}
+  .roadmap-step{position:relative;margin-bottom:2.5rem}
+  .roadmap-step:last-child{margin-bottom:0}
+  .roadmap-dot{position:absolute;left:-3rem;top:4px;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:0.85rem;font-weight:700;z-index:2;box-shadow:0 0 0 4px var(--cream)}
+  .sect:nth-child(even) .roadmap-dot{box-shadow:0 0 0 4px var(--white)}
+  .rd-1{background:var(--canopy);color:var(--white)}
+  .rd-2{background:var(--leaf);color:var(--white)}
+  .rd-3{background:var(--amber);color:var(--white)}
+  .rd-4{background:var(--blue);color:var(--white)}
+  .rd-5{background:var(--purple);color:var(--white)}
+  .rd-6{background:var(--canopy);color:var(--white)}
+  .roadmap-card{background:var(--white);border:1px solid rgba(15,36,25,0.06);border-radius:var(--radius-lg);padding:2rem;transition:all 0.35s}
+  .sect:nth-child(even) .roadmap-card{background:var(--cream)}
+  .roadmap-card:hover{transform:translateX(6px);box-shadow:var(--shadow-md);border-color:rgba(61,139,99,0.12)}
+  .roadmap-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:0.5rem}
+  .roadmap-card h3{font-family:'DM Serif Display',serif;font-size:1.2rem;color:var(--forest)}
+  .roadmap-card-duration{font-family:'JetBrains Mono',monospace;font-size:0.75rem;padding:4px 12px;border-radius:6px;font-weight:600}
+  .dur-green{background:rgba(61,139,99,0.08);color:var(--canopy)}
+  .dur-amber{background:rgba(232,168,56,0.08);color:var(--bark)}
+  .dur-blue{background:rgba(74,122,217,0.08);color:var(--blue)}
+  .dur-purple{background:rgba(155,109,215,0.08);color:var(--purple)}
+  .roadmap-tasks{display:grid;grid-template-columns:1fr 1fr;gap:0.5rem 2rem;margin-bottom:1rem}
+  .roadmap-task{display:flex;align-items:flex-start;gap:8px;font-size:0.88rem;color:var(--text-mid);line-height:1.5;padding:3px 0}
+  .roadmap-task::before{content:'→';color:var(--canopy);font-weight:700;flex-shrink:0;margin-top:1px}
+  .roadmap-deliverable{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;background:rgba(61,139,99,0.06);border:1px solid rgba(61,139,99,0.12);border-radius:8px;font-size:0.8rem;color:var(--canopy);font-weight:600}
+  .roadmap-deliverable span{font-size:0.9rem}
+
+  /* LLM FLEXIBILITY */
+  .llm-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:2rem}
+  .llm-section{background:var(--white);border:1px solid rgba(15,36,25,0.06);border-radius:var(--radius-lg);padding:2rem;transition:all 0.3s}
+  .sect:nth-child(even) .llm-section{background:var(--cream)}
+  .llm-section:hover{box-shadow:var(--shadow-sm);transform:translateY(-2px)}
+  .llm-section-header{display:flex;align-items:center;gap:10px;margin-bottom:1.2rem}
+  .llm-section-icon{width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:1.2rem}
+  .lsi-green{background:rgba(61,139,99,0.08)}
+  .lsi-blue{background:rgba(74,122,217,0.08)}
+  .llm-section h4{font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--forest)}
+  .llm-model{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border-radius:8px;margin-bottom:6px;font-size:0.85rem;background:rgba(15,36,25,0.02);border:1px solid rgba(15,36,25,0.04);transition:all 0.2s}
+  .llm-model:hover{background:rgba(15,36,25,0.04)}
+  .llm-model-name{color:var(--text-dark);font-weight:500;display:flex;align-items:center;gap:8px}
+  .llm-model-name code{font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:var(--text-light);background:rgba(15,36,25,0.04);padding:1px 6px;border-radius:3px}
+  .llm-model-meta{font-size:0.72rem;font-family:'JetBrains Mono',monospace;color:var(--text-light)}
+  .llm-badge{font-size:0.62rem;padding:2px 7px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-weight:600;margin-left:6px}
+  .lb-current{background:rgba(92,184,122,0.12);color:var(--canopy)}
+  .lb-ready{background:rgba(74,122,217,0.1);color:var(--blue)}
+  .lb-planned{background:rgba(232,168,56,0.1);color:var(--bark)}
+  .lb-compat{background:rgba(155,109,215,0.1);color:var(--purple)}
+
+  /* WHY CARDS */
+  .why-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-top:1.5rem}
+  .why-card{text-align:center;padding:1.5rem 1rem;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:var(--radius);transition:all 0.3s}
+  .why-card:hover{background:rgba(255,255,255,0.08);transform:translateY(-3px)}
+  .why-card-icon{font-size:1.4rem;margin-bottom:0.6rem}
+  .why-card h5{font-size:0.9rem;color:var(--white);margin-bottom:0.3rem;font-weight:600}
+  .why-card p{font-size:0.75rem;color:rgba(255,255,255,0.45);line-height:1.6}
+
+  /* PRICING */
+  .pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem}
+  .pricing-card{background:var(--white);border:1px solid rgba(15,36,25,0.06);border-radius:var(--radius-lg);padding:2.5rem 2rem;transition:all 0.35s;position:relative;overflow:hidden}
+  .sect:nth-child(even) .pricing-card{background:var(--cream)}
+  .pricing-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-md)}
+  .pricing-card.featured{border-color:var(--canopy);background:var(--forest);color:var(--white)}
+  .pricing-card.featured::before{content:'Recommended';position:absolute;top:16px;right:-28px;background:var(--amber);color:var(--forest);font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;padding:4px 36px;transform:rotate(45deg)}
+  .pricing-card-label{font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;font-weight:600;margin-bottom:0.8rem}
+  .pc-label-green{color:var(--canopy)}
+  .pc-label-white{color:rgba(255,255,255,0.5)}
+  .pricing-card h3{font-family:'DM Serif Display',serif;font-size:1.5rem;margin-bottom:0.5rem}
+  .pricing-card.featured h3{color:var(--white)}
+  .pricing-price{font-family:'JetBrains Mono',monospace;font-size:2rem;font-weight:700;color:var(--forest);margin-bottom:0.2rem}
+  .pricing-card.featured .pricing-price{color:var(--leaf-light)}
+  .pricing-unit{font-size:0.82rem;color:var(--text-light);margin-bottom:1.5rem}
+  .pricing-card.featured .pricing-unit{color:rgba(255,255,255,0.45)}
+  .pricing-divider{height:1px;background:rgba(15,36,25,0.06);margin-bottom:1.5rem}
+  .pricing-card.featured .pricing-divider{background:rgba(255,255,255,0.1)}
+  .pricing-item{display:flex;align-items:flex-start;gap:8px;font-size:0.88rem;color:var(--text-mid);line-height:1.5;padding:5px 0}
+  .pricing-card.featured .pricing-item{color:rgba(255,255,255,0.65)}
+  .pricing-item::before{content:'✓';color:var(--canopy);font-weight:700;flex-shrink:0}
+  .pricing-card.featured .pricing-item::before{color:var(--leaf-light)}
+  .pricing-cta{display:block;text-align:center;padding:14px 24px;border-radius:10px;font-weight:600;font-size:0.95rem;text-decoration:none;margin-top:2rem;transition:all 0.25s}
+  .pc-cta-outline{color:var(--forest);border:1.5px solid rgba(15,36,25,0.15);background:transparent}
+  .pc-cta-outline:hover{border-color:var(--canopy);transform:translateY(-1px)}
+  .pc-cta-primary{color:var(--forest);background:var(--white);border:none}
+  .pc-cta-primary:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.2)}
+
+  /* WHAT'S INCLUDED */
+  .included-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem}
+  .included-card{background:var(--cream);border:1px solid rgba(15,36,25,0.05);border-radius:var(--radius);padding:1.5rem;transition:all 0.3s}
+  .sect:nth-child(even) .included-card{background:var(--white)}
+  .included-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-sm)}
+  .included-card-icon{font-size:1.3rem;margin-bottom:0.7rem}
+  .included-card h4{font-size:0.95rem;color:var(--forest);font-weight:600;margin-bottom:0.3rem}
+  .included-card p{font-size:0.82rem;color:var(--text-mid);line-height:1.6;font-weight:300}
+
+  /* DARK SECTION */
+  .dark-sect{background:var(--forest);color:var(--white);padding:5rem 2rem}
+  .dark-sect .section-label{color:var(--leaf-light)}
+  .dark-sect .section-title{color:var(--white)}
+  .dark-sect .section-desc{color:rgba(255,255,255,0.5)}
+
+  /* TOTAL BAR */
+  .total-bar{background:var(--forest);border-radius:var(--radius-lg);padding:2rem 2.5rem;display:flex;align-items:center;justify-content:space-between;color:var(--white);margin-top:2rem;flex-wrap:wrap;gap:1rem}
+  .total-bar-text h3{font-family:'DM Serif Display',serif;font-size:1.3rem;margin-bottom:0.2rem}
+  .total-bar-text p{font-size:0.88rem;color:rgba(255,255,255,0.5);font-weight:300}
+  .total-bar-val{font-family:'JetBrains Mono',monospace;font-size:1.8rem;font-weight:700;color:var(--leaf-light)}
+
+  /* CTA */
+  .cta{padding:6rem 2rem;text-align:center;background:var(--forest);position:relative;overflow:hidden}
+  .cta::before{content:'';position:absolute;top:-200px;left:50%;transform:translateX(-50%);width:800px;height:800px;background:radial-gradient(circle,rgba(92,184,122,0.1) 0%,transparent 70%);pointer-events:none}
+  .cta h2{font-family:'DM Serif Display',serif;font-size:clamp(2rem,4vw,2.6rem);color:var(--white);margin-bottom:1rem}
+  .cta p{color:rgba(255,255,255,0.6);font-size:1.05rem;margin-bottom:2.5rem;font-weight:300;max-width:520px;margin-left:auto;margin-right:auto}
+  .cta-actions{display:flex;justify-content:center;gap:1rem;flex-wrap:wrap}
+  .btn-cta-w{background:var(--white);color:var(--forest);padding:14px 32px;border-radius:10px;font-weight:600;font-size:1rem;text-decoration:none;transition:all 0.25s}
+  .btn-cta-w:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.2)}
+  .btn-cta-o{background:transparent;color:var(--white);padding:14px 32px;border-radius:10px;font-weight:600;font-size:1rem;text-decoration:none;transition:all 0.25s;border:1.5px solid rgba(255,255,255,0.25)}
+  .btn-cta-o:hover{border-color:rgba(255,255,255,0.5)}
+
+  /* FOOTER */
+  footer{background:var(--forest);color:rgba(255,255,255,0.6);padding:3rem 2rem 2rem;border-top:1px solid rgba(255,255,255,0.06)}
+  .footer-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr;gap:3rem;margin-bottom:2rem}
+  .footer-brand .logo-text{color:var(--white)}
+  .footer-brand p{margin-top:1rem;font-size:0.85rem;line-height:1.7;max-width:280px}
+  .footer-col h4{color:var(--white);font-weight:600;font-size:0.82rem;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:1rem}
+  .footer-col a{display:block;color:rgba(255,255,255,0.5);text-decoration:none;font-size:0.88rem;padding:3px 0;transition:color 0.2s}
+  .footer-col a:hover{color:var(--leaf-light)}
+  .footer-bottom{max-width:1100px;margin:0 auto;border-top:1px solid rgba(255,255,255,0.08);padding-top:1.5rem;display:flex;justify-content:space-between;font-size:0.78rem}
+  .footer-bottom a{color:rgba(255,255,255,0.4);text-decoration:none}
+
+  @media(max-width:768px){
+    .roadmap-tasks{grid-template-columns:1fr}
+    .llm-grid{grid-template-columns:1fr}
+    .pricing-grid{grid-template-columns:1fr}
+    .why-grid{grid-template-columns:1fr 1fr}
+    .included-grid{grid-template-columns:1fr}
+    .total-bar{flex-direction:column;text-align:center}
+    .footer-inner{grid-template-columns:1fr 1fr}
+    .nav-links a:not(.nav-cta){display:none}
+  }
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="logo">
+      <svg viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="8" fill="#0f2419"/><path d="M16 6 L16 18 M12 10 L16 14 M20 10 L16 14 M10 14 L16 20 M22 14 L16 20 M8 18 L16 26 M24 18 L16 26" stroke="#5cb87a" stroke-width="2" stroke-linecap="round"/></svg>
+      <span class="logo-text">ArborSpace</span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="features.html">Features</a>
+      <a href="usecases.html">Use Cases</a>
+      <a href="#" class="active">Services</a>
+      <a href="mailto:jeanphilbreysse@gmail.com" class="nav-cta">Contact Us</a>
+    </div>
+  </div>
+</nav>
+
+<section class="page-header">
+  <div class="section-label">Installation & Implementation</div>
+  <h1>From kickoff to <em>production</em></h1>
+  <p>A structured engagement from requirements to go-live. Each phase has a clear deliverable. Platform usable from Day 3. Total timeline: 5–15 working days depending on scope.</p>
+</section>
+
+
+<!-- ═══ IMPLEMENTATION ROADMAP ═══ -->
+<section class="sect" id="roadmap">
+  <div class="sect-inner">
+    <div class="section-label">Implementation Roadmap</div>
+    <h2 class="section-title">Six phases, six deliverables</h2>
+    <p class="section-desc">From audit to production. Each phase ends with a tangible output that feeds the next step. No ambiguity, no scope creep.</p>
+
+    <div class="roadmap">
+
+      <!-- Phase 1 -->
+      <div class="roadmap-step">
+        <div class="roadmap-dot rd-1">1</div>
+        <div class="roadmap-card">
+          <div class="roadmap-card-header">
+            <h3>Requirements & Audit</h3>
+            <span class="roadmap-card-duration dur-green">1–2 days</span>
+          </div>
+          <div class="roadmap-tasks">
+            <div class="roadmap-task">Audit existing knowledge base — inventory of docs, formats, volumes</div>
+            <div class="roadmap-task">Infrastructure & security review — server specs, network, firewall rules</div>
+            <div class="roadmap-task">Define taxonomy with domain experts — categories, tags, folder hierarchy</div>
+            <div class="roadmap-task">Identify priority document sets — which content gets ingested first</div>
+          </div>
+          <div class="roadmap-deliverable"><span>📋</span> Specification document</div>
+        </div>
+      </div>
+
+      <!-- Phase 2 -->
+      <div class="roadmap-step">
+        <div class="roadmap-dot rd-2">2</div>
+        <div class="roadmap-card">
+          <div class="roadmap-card-header">
+            <h3>Installation & Infrastructure</h3>
+            <span class="roadmap-card-duration dur-green">1 day</span>
+          </div>
+          <div class="roadmap-tasks">
+            <div class="roadmap-task">Deploy Docker Compose on target server — SvelteKit + PostgreSQL + Ollama</div>
+            <div class="roadmap-task">PostgreSQL 16 + pgvector extension — persistent volumes, backup strategy</div>
+            <div class="roadmap-task">Ollama + Mistral 7B + nomic-embed-text — model download and verification</div>
+            <div class="roadmap-task">TLS, LDAP/SSO integration, RBAC configuration — enterprise auth stack</div>
+          </div>
+          <div class="roadmap-deliverable"><span>🖥️</span> Running platform</div>
+        </div>
+      </div>
+
+      <!-- Phase 3 -->
+      <div class="roadmap-step">
+        <div class="roadmap-dot rd-3">3</div>
+        <div class="roadmap-card">
+          <div class="roadmap-card-header">
+            <h3>Customization & Data Migration</h3>
+            <span class="roadmap-card-duration dur-amber">2–5 days</span>
+          </div>
+          <div class="roadmap-tasks">
+            <div class="roadmap-task">Taxonomy & category hierarchy — domain-specific tree built with your experts</div>
+            <div class="roadmap-task">Prompt templates for your domain — 6–10 templates crafted with senior staff</div>
+            <div class="roadmap-task">Document ingestion & chunking — PDF, Excel, Word bulk import pipeline</div>
+            <div class="roadmap-task">Data migration from existing systems — SharePoint, Confluence, file shares</div>
+          </div>
+          <div class="roadmap-deliverable"><span>⚙️</span> Configured platform</div>
+        </div>
+      </div>
+
+      <!-- Phase 4 -->
+      <div class="roadmap-step">
+        <div class="roadmap-dot rd-4">4</div>
+        <div class="roadmap-card">
+          <div class="roadmap-card-header">
+            <h3>Testing & Validation</h3>
+            <span class="roadmap-card-duration dur-blue">1–3 days</span>
+          </div>
+          <div class="roadmap-tasks">
+            <div class="roadmap-task">Search accuracy validation — semantic results match domain expectations</div>
+            <div class="roadmap-task">RAG answer quality review — benchmark questions with expected answers</div>
+            <div class="roadmap-task">Auto-classification accuracy — verify LLM assigns correct types and topics</div>
+            <div class="roadmap-task">Security & access control audit — group permissions, visibility enforcement</div>
+          </div>
+          <div class="roadmap-deliverable"><span>✅</span> Test report & fixes applied</div>
+        </div>
+      </div>
+
+      <!-- Phase 5 -->
+      <div class="roadmap-step">
+        <div class="roadmap-dot rd-5">5</div>
+        <div class="roadmap-card">
+          <div class="roadmap-card-header">
+            <h3>Training & Documentation</h3>
+            <span class="roadmap-card-duration dur-purple">1–2 days</span>
+          </div>
+          <div class="roadmap-tasks">
+            <div class="roadmap-task">User training workshops — content creation, search, chat, graph navigation</div>
+            <div class="roadmap-task">Admin documentation — platform management, taxonomy updates, user provisioning</div>
+            <div class="roadmap-task">Power user certification — prompt template editing, workflow creation</div>
+            <div class="roadmap-task">Handover & support plan — escalation paths, update procedures</div>
+          </div>
+          <div class="roadmap-deliverable"><span>🎓</span> Team autonomous</div>
+        </div>
+      </div>
+
+      <!-- Phase 6 -->
+      <div class="roadmap-step">
+        <div class="roadmap-dot rd-6">6</div>
+        <div class="roadmap-card">
+          <div class="roadmap-card-header">
+            <h3>Go Live & First-Week Support</h3>
+            <span class="roadmap-card-duration dur-green">1–2 days</span>
+          </div>
+          <div class="roadmap-tasks">
+            <div class="roadmap-task">Production deployment — final configuration, monitoring setup, health checks</div>
+            <div class="roadmap-task">Monitoring & feedback loop — usage metrics, search quality monitoring</div>
+            <div class="roadmap-task">Iterate on prompts & taxonomy — first-week insights refine the configuration</div>
+            <div class="roadmap-task">First-week reactive support included — issues resolved within business hours</div>
+          </div>
+          <div class="roadmap-deliverable"><span>🚀</span> Platform in production</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="total-bar">
+      <div class="total-bar-text">
+        <h3>Total Implementation</h3>
+        <p>Each phase has a clear deliverable · Platform usable from Day 3</p>
+      </div>
+      <div class="total-bar-val">5–15 days</div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══ LLM FLEXIBILITY ═══ -->
+<section class="dark-sect" id="llm">
+  <div class="sect-inner">
+    <div class="section-label">LLM Flexibility</div>
+    <h2 class="section-title">Swap the LLM, keep the platform</h2>
+    <p class="section-desc">ArborSpace connects to any LLM via a standard adapter layer. Change the model in config — zero code changes, zero rewrite, zero risk.</p>
+
+    <div class="llm-grid">
+      <div class="llm-section" style="background:rgba(255,255,255,0.03);border-color:rgba(255,255,255,0.08)">
+        <div class="llm-section-header">
+          <div class="llm-section-icon lsi-green" style="background:rgba(92,184,122,0.1)">🏠</div>
+          <h4 style="color:var(--white)">On-Premise — via Ollama</h4>
+        </div>
+        <p style="font-size:0.82rem;color:rgba(255,255,255,0.4);margin-bottom:1rem">Data stays local. No external API calls.</p>
+        <div class="llm-model" style="background:rgba(255,255,255,0.04);border-color:rgba(255,255,255,0.06)">
+          <span class="llm-model-name" style="color:var(--white)">Mistral 7B <code style="background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.4)">4 GB</code> <span class="llm-badge lb-current">CURRENT</span></span>
+          <span class="llm-model-meta" style="color:rgba(255,255,255,0.3)">Fast, French-fluent, 8K ctx</span>
+        </div>
+        <div class="llm-model" style="background:rgba(255,255,255,0.04);border-color:rgba(255,255,255,0.06)">
+          <span class="llm-model-name" style="color:var(--white)">Mistral NeMo 12B <code style="background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.4)">8 GB</code> <span class="llm-badge lb-ready">READY</span></span>
+          <span class="llm-model-meta" style="color:rgba(255,255,255,0.3)">Stronger reasoning, 128K ctx</span>
+        </div>
+        <div class="llm-model" style="background:rgba(255,255,255,0.04);border-color:rgba(255,255,255,0.06)">
+          <span class="llm-model-name" style="color:var(--white)">Qwen3 14B <code style="background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.4)">10 GB</code> <span class="llm-badge lb-ready">READY</span></span>
+          <span class="llm-model-meta" style="color:rgba(255,255,255,0.3)">Best function calling, agent-ready</span>
+        </div>
+        <div class="llm-model" style="background:rgba(255,255,255,0.04);border-color:rgba(255,255,255,0.06)">
+          <span class="llm-model-name" style="color:var(--white)">Mistral Small 24B <code style="background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.4)">16 GB</code> <span class="llm-badge lb-planned">PLANNED</span></span>
+          <span class="llm-model-meta" style="color:rgba(255,255,255,0.3)">Near-GPT-4 quality, tool use</span>
+        </div>
+      </div>
+
+      <div class="llm-section" style="background:rgba(255,255,255,0.03);border-color:rgba(255,255,255,0.08)">
+        <div class="llm-section-header">
+          <div class="llm-section-icon lsi-blue" style="background:rgba(74,122,217,0.1)">☁️</div>
+          <h4 style="color:var(--white)">Cloud — via Azure / API</h4>
+        </div>
+        <p style="font-size:0.82rem;color:rgba(255,255,255,0.4);margin-bottom:1rem">Azure data residency available. EU compliant.</p>
+        <div class="llm-model" style="background:rgba(255,255,255,0.04);border-color:rgba(255,255,255,0.06)">
+          <span class="llm-model-name" style="color:var(--white)">Azure OpenAI <span class="llm-badge lb-compat">COMPATIBLE</span></span>
+          <span class="llm-model-meta" style="color:rgba(255,255,255,0.3)">GPT-4o, GPT-4 Turbo</span>
+        </div>
+        <div class="llm-model" style="background:rgba(255,255,255,0.04);border-color:rgba(255,255,255,0.06)">
+          <span class="llm-model-name" style="color:var(--white)">Azure Mistral <span class="llm-badge lb-compat">COMPATIBLE</span></span>
+          <span class="llm-model-meta" style="color:rgba(255,255,255,0.3)">Mistral Large on Azure MaaS</span>
+        </div>
+        <div class="llm-model" style="background:rgba(255,255,255,0.04);border-color:rgba(255,255,255,0.06)">
+          <span class="llm-model-name" style="color:var(--white)">Azure Llama <span class="llm-badge lb-compat">COMPATIBLE</span></span>
+          <span class="llm-model-meta" style="color:rgba(255,255,255,0.3)">Llama 3.1 70B/405B via AI Studio</span>
+        </div>
+        <div class="llm-model" style="background:rgba(255,255,255,0.04);border-color:rgba(255,255,255,0.06)">
+          <span class="llm-model-name" style="color:var(--white)">Anthropic API <span class="llm-badge lb-compat">COMPATIBLE</span></span>
+          <span class="llm-model-meta" style="color:rgba(255,255,255,0.3)">Claude Sonnet / Opus</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="why-grid">
+      <div class="why-card">
+        <div class="why-card-icon">🔓</div>
+        <h5>No Vendor Lock-in</h5>
+        <p>Start with Mistral 7B today. Move to Qwen3 14B or Azure GPT-4o tomorrow. No rewrite, no migration.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-card-icon">📈</div>
+        <h5>Follow the Curve</h5>
+        <p>Open-source LLMs improve every quarter. ArborSpace automatically benefits without R&D investment.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-card-icon">🏦</div>
+        <h5>Client Decides</h5>
+        <p>Bank wants on-premise? Ollama. Non-regulated client OK with cloud? Azure OpenAI. Same platform.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-card-icon">🔀</div>
+        <h5>Hybrid Ready</h5>
+        <p>Use Ollama for NDA-sensitive queries, Azure GPT-4o for general analysis. Route by data classification.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══ WHAT'S INCLUDED ═══ -->
+<section class="sect" id="included">
+  <div class="sect-inner">
+    <div class="section-label">What's Included</div>
+    <h2 class="section-title">Every engagement covers the full stack</h2>
+    <p class="section-desc">No hidden costs. No modules to unlock. Every feature available from day one.</p>
+
+    <div class="included-grid">
+      <div class="included-card">
+        <div class="included-card-icon">🐳</div>
+        <h4>Docker Compose Deployment</h4>
+        <p>Three containers — SvelteKit, PostgreSQL, Ollama — configured for your server, with persistent volumes, TLS, and health checks.</p>
+      </div>
+      <div class="included-card">
+        <div class="included-card-icon">🗂️</div>
+        <h4>Taxonomy Design</h4>
+        <p>Categories, tags, folder hierarchy built with your domain experts. The taxonomy is your competitive moat — we help you design it right.</p>
+      </div>
+      <div class="included-card">
+        <div class="included-card-icon">✦</div>
+        <h4>Prompt Template Library</h4>
+        <p>6–10 domain-specific prompt templates crafted during Phase 3 with your senior staff. Benchmark, analysis, comparison, red-flag detection.</p>
+      </div>
+      <div class="included-card">
+        <div class="included-card-icon">📥</div>
+        <h4>Data Migration</h4>
+        <p>Bulk import from PDF, Excel, Word, SharePoint exports. Documents chunked, vectorized, and classified on ingest.</p>
+      </div>
+      <div class="included-card">
+        <div class="included-card-icon">🔐</div>
+        <h4>LDAP/SSO Integration</h4>
+        <p>Connect to your Active Directory or LDAP. Groups map to organizational units. Single sign-on configured and tested.</p>
+      </div>
+      <div class="included-card">
+        <div class="included-card-icon">⚙️</div>
+        <h4>Workflow Setup</h4>
+        <p>Multi-step LLM pipelines configured for your use case — diagnostic workflows, enrichment pipelines, or reporting chains.</p>
+      </div>
+      <div class="included-card">
+        <div class="included-card-icon">🎓</div>
+        <h4>Training & Certification</h4>
+        <p>Hands-on workshops for users, admins, and power users. Admin documentation. Prompt template editing certified.</p>
+      </div>
+      <div class="included-card">
+        <div class="included-card-icon">🚀</div>
+        <h4>First-Week Support</h4>
+        <p>Reactive support during the first week of production. Prompt tuning, taxonomy adjustments, issue resolution within business hours.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══ PRICING ═══ -->
+<section class="sect" id="pricing">
+  <div class="sect-inner">
+    <div class="section-label">Pricing</div>
+    <h2 class="section-title">Transparent pricing, no per-user fees</h2>
+    <p class="section-desc">One-time implementation. Optional annual support. No surprises. Your knowledge base is yours — forever.</p>
+
+    <div class="pricing-grid">
+      <!-- Starter -->
+      <div class="pricing-card">
+        <div class="pricing-card-label pc-label-green">Starter</div>
+        <h3>Quick Start</h3>
+        <div class="pricing-price">5 days</div>
+        <div class="pricing-unit">Best for small teams exploring RAG</div>
+        <div class="pricing-divider"></div>
+        <div class="pricing-item">Docker Compose deployment</div>
+        <div class="pricing-item">PostgreSQL + pgvector + Ollama</div>
+        <div class="pricing-item">Basic taxonomy setup</div>
+        <div class="pricing-item">3 prompt templates</div>
+        <div class="pricing-item">Initial document import (up to 500 docs)</div>
+        <div class="pricing-item">Half-day user training</div>
+        <div class="pricing-item">3 days first-week support</div>
+      </div>
+
+      <!-- Standard -->
+      <div class="pricing-card featured">
+        <div class="pricing-card-label pc-label-white">Standard</div>
+        <h3>Full Implementation</h3>
+        <div class="pricing-price">10 days</div>
+        <div class="pricing-unit">Most teams — consulting, support, projects</div>
+        <div class="pricing-divider"></div>
+        <div class="pricing-item">Everything in Starter</div>
+        <div class="pricing-item">Domain taxonomy co-designed with experts</div>
+        <div class="pricing-item">6–10 prompt templates with your senior staff</div>
+        <div class="pricing-item">LDAP / SSO integration</div>
+        <div class="pricing-item">Full data migration (unlimited docs)</div>
+        <div class="pricing-item">Multi-step workflow configuration</div>
+        <div class="pricing-item">Search quality validation & tuning</div>
+        <div class="pricing-item">Full-day training + admin certification</div>
+        <div class="pricing-item">5 days first-week support</div>
+      </div>
+
+      <!-- Enterprise -->
+      <div class="pricing-card">
+        <div class="pricing-card-label pc-label-green">Enterprise</div>
+        <h3>Custom Integration</h3>
+        <div class="pricing-price">15+ days</div>
+        <div class="pricing-unit">Complex environments, multi-team, regulated</div>
+        <div class="pricing-divider"></div>
+        <div class="pricing-item">Everything in Standard</div>
+        <div class="pricing-item">Multi-organization access boundaries</div>
+        <div class="pricing-item">Custom workflow development</div>
+        <div class="pricing-item">Game theory evaluation pipelines</div>
+        <div class="pricing-item">API integration with existing tools</div>
+        <div class="pricing-item">LLM routing (on-prem + cloud hybrid)</div>
+        <div class="pricing-item">Security audit & compliance documentation</div>
+        <div class="pricing-item">Ongoing support contract available</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══ ANNUAL SUPPORT ═══ -->
+<section class="sect" id="support">
+  <div class="sect-inner">
+    <div class="section-label">Annual Support (Optional)</div>
+    <h2 class="section-title">Keep your knowledge tree healthy</h2>
+    <p class="section-desc">After go-live, an optional annual support contract covers platform upgrades, LLM model updates, prompt tuning, and priority issue resolution.</p>
+
+    <div class="included-grid">
+      <div class="included-card">
+        <div class="included-card-icon">🔄</div>
+        <h4>Platform Upgrades</h4>
+        <p>SvelteKit, PostgreSQL, and Ollama updates applied and tested. New ArborSpace features deployed on your schedule.</p>
+      </div>
+      <div class="included-card">
+        <div class="included-card-icon">🧠</div>
+        <h4>LLM Model Updates</h4>
+        <p>New open-source models evaluated and deployed as they become available. Mistral, Qwen, Llama — always on the best model for your use case.</p>
+      </div>
+      <div class="included-card">
+        <div class="included-card-icon">✦</div>
+        <h4>Prompt & Taxonomy Tuning</h4>
+        <p>Quarterly review sessions to refine prompt templates, adjust taxonomy, and optimize search quality based on usage patterns.</p>
+      </div>
+      <div class="included-card">
+        <div class="included-card-icon">🛡️</div>
+        <h4>Priority Support</h4>
+        <p>Business-hours issue resolution. Direct access to the implementation engineer who built your platform.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- CTA -->
+<section class="cta">
+  <h2>Ready to plant the first seed?</h2>
+  <p>From kickoff to production in 5–15 days. Open source, on-premise, no per-user fees. Your knowledge, your infrastructure, your control.</p>
+</section>
+
+<footer>
+  <div class="footer-inner" style="grid-template-columns:2fr 1fr 1fr">
+    <div class="footer-brand">
+      <a href="index.html" class="logo">
+        <svg viewBox="0 0 32 32" fill="none" width="32" height="32"><rect width="32" height="32" rx="8" fill="#0f2419"/><path d="M16 6 L16 18 M12 10 L16 14 M20 10 L16 14 M10 14 L16 20 M22 14 L16 20 M8 18 L16 26 M24 18 L16 26" stroke="#5cb87a" stroke-width="2" stroke-linecap="round"/></svg>
+        <span class="logo-text">ArborSpace</span>
+      </a>
+      <p>Structured knowledge for intelligent AI retrieval. Built in the French Alps. Open source forever.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Product</h4>
+      <a href="index.html">Home</a>
+      <a href="features.html">Features</a>
+      <a href="usecases.html">Use Cases</a>
+      <a href="services.html">Services</a>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <a href="/cdn-cgi/l/email-protection#3b515e5a554b53525759495e4248485e7b5c565a525715585456"><span class="__cf_email__" data-cfemail="38525d5956485051545a4a5d414b4b5d785f55595154165b5755">[email&#160;protected]</span></a>
+      <a href="https://github.com/arborspace" target="_blank">GitHub</a>
+      <a href="https://linkedin.com" target="_blank">LinkedIn</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 ArborSpace. Open source under MIT license.</span>
+    <div style="display:flex;gap:1.5rem"><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Security</a></div>
+  </div>
+</footer>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  window.addEventListener('scroll',()=>{document.getElementById('nav').classList.toggle('scrolled',window.scrollY>10)});
+  const obs=new IntersectionObserver(e=>{e.forEach(el=>{if(el.isIntersecting){el.target.style.opacity='1';el.target.style.transform='translateY(0)'}})},{threshold:0.06});
+  document.querySelectorAll('.
