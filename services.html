@@ -608,4 +608,7 @@
 <script>
   window.addEventListener('scroll',()=>{document.getElementById('nav').classList.toggle('scrolled',window.scrollY>10)});
   const obs=new IntersectionObserver(e=>{e.forEach(el=>{if(el.isIntersecting){el.target.style.opacity='1';el.target.style.transform='translateY(0)'}})},{threshold:0.06});
-  document.querySelectorAll('.
+  document.querySelectorAll('.roadmap-step,.llm-section,.why-card,.included-card,.pricing-card,.total-bar').forEach(el=>{el.style.opacity='0';el.style.transform='translateY(20px)';el.style.transition='opacity 0.6s ease,transform 0.6s ease';obs.observe(el)});
+</script>
+</body>
+</html>
